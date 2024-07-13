@@ -6,6 +6,8 @@ public class PlayerController : MonoBehaviour
 {
     private bool isGrounded; // 地面に接地しているかどうかのフラグ
     public LayerMask groundLayer; // 地面として扱うレイヤーマスク
+    public LayerMask maskedGroundLayer; // マスクで消された地面のレイヤーマスク
+    public float checkRadius;
     private Collider2D playerCollider; // プレイヤーのコライダー
     private Rigidbody2D rb; // プレイヤーの Rigidbody2D
 
@@ -19,7 +21,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         // 地面にいるかどうかを判定する
-        isGrounded = Physics2D.OverlapCircle(transform.position, 0.1f, groundLayer);
+        isGrounded = Physics2D.OverlapCircle(transform.position, checkRadius, groundLayer);
 
         if (isGrounded)
         {
@@ -27,11 +29,24 @@ public class PlayerController : MonoBehaviour
             playerCollider.enabled = true; // コライダーを有効にする（地面と衝突する）
             rb.isKinematic = false; // 物理挙動を有効にする（重力が影響する）
         }
-        else
+        else if (Physics2D.OverlapCircle(transform.position, checkRadius, maskedGroundLayer))
         {
-            // 地面にいない時の処理（すり抜ける）
+            // マスクで消された地面にいる時の処理（すり抜ける）
             playerCollider.enabled = false; // コライダーを無効にする（地面と衝突しない）
             rb.isKinematic = true; // 物理挙動を無効にする（重力が影響しない）
         }
+        else
+        {
+            // どの地面にも接触していない時の処理（通常の空中状態）
+            playerCollider.enabled = true; // コライダーを有効にする
+            rb.isKinematic = false; // 物理挙動を有効にする（重力が影響する）
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        // Scene ビューでこの範囲を表示するための処理
+        Gizmos.color = Color.red; // ギズモの色を赤に設定
+        Gizmos.DrawWireSphere(transform.position, checkRadius); // 範囲をワイヤーフレームの球として描画
     }
 }
