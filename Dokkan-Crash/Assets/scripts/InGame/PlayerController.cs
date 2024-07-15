@@ -64,7 +64,7 @@ public abstract class PlayerController : MonoBehaviour
             fireAngle -= 0.1f;
         }
 
-        // スペースキーで発射威力を調整
+        // 左クリックで発射威力を調整
         if (Input.GetMouseButtonDown(0))
         {
             currentPower += powerChangeRate;
@@ -74,7 +74,7 @@ public abstract class PlayerController : MonoBehaviour
             }
         }
 
-        // スペースキーを離すと弾を発射
+        // 左クリックを離すと弾を発射
         if (Input.GetMouseButtonUp(0))
         {
             FireBullet();
