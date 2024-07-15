@@ -21,6 +21,88 @@ public abstract class PlayerController : MonoBehaviour
     public int JumpCount = 2; // ジャンプの回数
     public float jumpForce = 15f; // ジャンプの力
 
+
+
+/// <summary>
+/// //////////////////////////////////////////////////////////////////////////////////////////////////////////////変更点
+/// </summary>
+
+
+
+    public Transform firePoint;
+    public GameObject bulletPrefab;
+    public float maxPower = 20f;
+    public float minPower = 5f;
+    public float powerChangeRate = 0.5f;
+
+    private bool isPlayerTurn = false;
+    private float currentPower;
+    private float fireAngle;
+
+    void Start()
+    {
+        currentPower = minPower;
+        fireAngle = 0f;
+    }
+
+    public void SetPlayer(bool isTurn)
+    {
+        isPlayerTurn = isTurn;
+    }
+
+    public void HandlePlayerInput()
+    {
+        if (!isPlayerTurn) return;
+
+        // 矢印キーで方角を調整
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            fireAngle += 1f;
+        }
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            fireAngle -= 1f;
+        }
+
+        // スペースキーで発射威力を調整
+        if (Input.GetKey(KeyCode.Space))
+        {
+            currentPower += powerChangeRate;
+            if (currentPower > maxPower)
+            {
+                currentPower = minPower;
+            }
+        }
+
+        // スペースキーを離すと弾を発射
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            FireBullet();
+            FindObjectOfType<InGame_GM>().SwitchTurn();
+        }
+
+        // 戦車の向きを更新
+        transform.rotation = Quaternion.Euler(0, 0, fireAngle);
+    }
+
+    void FireBullet()
+    {
+        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
+        rb.velocity = firePoint.up * currentPower;
+    }
+
+
+/// <summary>
+/// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// </summary>
+
+
+
+
+
+
+
     // アニメーションの更新メソッド
     protected void AnimUpdate()
     {
