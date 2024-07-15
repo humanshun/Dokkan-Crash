@@ -55,17 +55,17 @@ public abstract class PlayerController : MonoBehaviour
         if (!isPlayerTurn) return;
 
         // 矢印キーで方角を調整
-        if (Input.GetKey(KeyCode.UpArrow))
+        if (Input.GetKey(KeyCode.W))
         {
-            fireAngle += 1f;
+            fireAngle += 0.1f;
         }
-        if (Input.GetKey(KeyCode.DownArrow))
+        if (Input.GetKey(KeyCode.S))
         {
-            fireAngle -= 1f;
+            fireAngle -= 0.1f;
         }
 
         // スペースキーで発射威力を調整
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetMouseButtonDown(0))
         {
             currentPower += powerChangeRate;
             if (currentPower > maxPower)
@@ -75,14 +75,14 @@ public abstract class PlayerController : MonoBehaviour
         }
 
         // スペースキーを離すと弾を発射
-        if (Input.GetKeyUp(KeyCode.Space))
+        if (Input.GetMouseButtonUp(0))
         {
             FireBullet();
             FindObjectOfType<InGame_GM>().SwitchTurn();
         }
 
-        // 戦車の向きを更新
-        transform.rotation = Quaternion.Euler(0, 0, fireAngle);
+        // 発射の向きを更新
+        firePoint.rotation = Quaternion.Euler(0, 0, fireAngle);
     }
 
     void FireBullet()
