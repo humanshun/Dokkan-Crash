@@ -4,6 +4,7 @@ public class InGame_GM : MonoBehaviour
 {
     public PlayerController player1;
     public PlayerController player2;
+    public PlayerManager playerManager;
 
     private bool isPlayer1Turn = true;
 
@@ -27,8 +28,6 @@ public class InGame_GM : MonoBehaviour
 
     public void SwitchTurn()
     {
-        isPlayer1Turn = !isPlayer1Turn;
-        player1.SetPlayer(isPlayer1Turn);
-        player2.SetPlayer(!isPlayer1Turn);
+        playerManager.SwitchToNextTurn();
     }
 }

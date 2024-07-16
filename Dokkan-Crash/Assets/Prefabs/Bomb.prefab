@@ -9,11 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6344084784153923899}
+  - component: {fileID: 3211466032255559298}
   - component: {fileID: 812271929239816227}
   - component: {fileID: 1648516990652449750}
   - component: {fileID: 2828695383623189229}
   - component: {fileID: 5619902122827995886}
-  - component: {fileID: 3211466032255559298}
   m_Layer: 0
   m_Name: Bomb
   m_TagString: Untagged
@@ -36,6 +36,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3211466032255559298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6020469347093829066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b92756067819918448e0fa5e5d7ccb2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  explosionPrefab: {fileID: 8202424974277963421, guid: a9c373c3c978beb438ed7c61872a335c, type: 3}
+  tilemap: {fileID: 0}
+  explosionRadius: 1.5
 --- !u!212 &812271929239816227
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -171,16 +186,3 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &3211466032255559298
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6020469347093829066}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b92756067819918448e0fa5e5d7ccb2f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  explosionPrefab: {fileID: 8202424974277963421, guid: a9c373c3c978beb438ed7c61872a335c, type: 3}

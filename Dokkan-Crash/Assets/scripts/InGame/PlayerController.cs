@@ -28,23 +28,24 @@ public abstract class PlayerController : MonoBehaviour
 /// //////////////////////////////////////////////////////////////////////////////////////////////////////////////変更点
 /// </summary>
 
+    public GameObject Player1;
+    public GameObject Player2;
 
-
-    public Transform firePoint;
-    public GameObject bulletPrefab;
-    public float minPower = 10f;
-    public float maxPower = 100f;
-    public float powerIncreaseRate = 10f;
+    public Transform firePoint; // 射撃位置
+    public GameObject bulletPrefab; // Bombのprefab
+    public float minPower = 10f; // 最小の力
+    public float maxPower = 100f; // 最大の力
+    public float powerIncreaseRate = 10f; // 1秒間に溜まる力
     public Slider powerSlider; // スライダーの参照を追加
 
-    private bool isPlayerTurn = false;
+    private bool isPlayer1Turn = true;
     private float fireAngle = 0f;
     private float currentPower = 0f;
     private bool isCharging = false;
 
     public void SetPlayer(bool isTurn)
     {
-        isPlayerTurn = isTurn;
+        isPlayer1Turn = isTurn;
         powerSlider.gameObject.SetActive(isTurn); // ターンが開始/終了時にスライダーを表示/非表示
         if (!isTurn)
         {
@@ -54,7 +55,7 @@ public abstract class PlayerController : MonoBehaviour
 
     public void HandlePlayerInput()
     {
-        if (!isPlayerTurn) return;
+        // if (!isPlayer1Turn) return;
 
         // 矢印キーで方角を調整
         if (Input.GetKey(KeyCode.W))
@@ -88,6 +89,7 @@ public abstract class PlayerController : MonoBehaviour
             isCharging = false;
             FireBullet();
             FindObjectOfType<InGame_GM>().SwitchTurn();
+             // FindObjectOfType<PlayerManager>().SwitchToNextTurn();
         }
 
         // 発射の向きを更新
