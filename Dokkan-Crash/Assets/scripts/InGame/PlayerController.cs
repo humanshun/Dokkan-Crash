@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public abstract class PlayerController : MonoBehaviour
 {
@@ -31,23 +32,24 @@ public abstract class PlayerController : MonoBehaviour
 
     public Transform firePoint;
     public GameObject bulletPrefab;
-    public float maxPower = 20f;
-    public float minPower = 5f;
-    public float powerChangeRate = 0.5f;
+    public float minPower = 10f;
+    public float maxPower = 100f;
+    public float powerIncreaseRate = 10f;
+    public Slider powerSlider; // スライダーの参照を追加
 
     private bool isPlayerTurn = false;
-    private float currentPower;
-    private float fireAngle;
-
-    void Start()
-    {
-        currentPower = minPower;
-        fireAngle = 0f;
-    }
+    private float fireAngle = 0f;
+    private float currentPower = 0f;
+    private bool isCharging = false;
 
     public void SetPlayer(bool isTurn)
     {
         isPlayerTurn = isTurn;
+        powerSlider.gameObject.SetActive(isTurn); // ターンが開始/終了時にスライダーを表示/非表示
+        if (!isTurn)
+        {
+            powerSlider.value = 0; // ターンが終わったらスライダーをリセット
+        }
     }
 
     public void HandlePlayerInput()
@@ -67,16 +69,23 @@ public abstract class PlayerController : MonoBehaviour
         // 左クリックで発射威力を調整
         if (Input.GetMouseButtonDown(0))
         {
-            currentPower += powerChangeRate;
-            if (currentPower > maxPower)
-            {
-                currentPower = minPower;
-            }
+            isCharging = true;
+            currentPower = minPower;  // 初期威力を設定
+            powerSlider.minValue = minPower;
+            powerSlider.maxValue = maxPower;
+        }
+
+        if (Input.GetMouseButton(0) && isCharging)
+        {
+            currentPower += powerIncreaseRate * Time.deltaTime;
+            currentPower = Mathf.Clamp(currentPower, minPower, maxPower);
+            powerSlider.value = currentPower; // スライダーの値を更新
         }
 
         // 左クリックを離すと弾を発射
         if (Input.GetMouseButtonUp(0))
         {
+            isCharging = false;
             FireBullet();
             FindObjectOfType<InGame_GM>().SwitchTurn();
         }

@@ -5,9 +5,9 @@ using UnityEngine;
 public class Bomb : MonoBehaviour
 {
     public GameObject explosionPrefab;
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject)
+        if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Player"))
         {
             //爆発時イメージを表示
             Instantiate(explosionPrefab, transform.position, Quaternion.identity);
