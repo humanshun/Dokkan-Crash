@@ -18,7 +18,7 @@ public class Explosion : MonoBehaviour
         mCur += Time.deltaTime;
         if (mCur > mLength)
         {
-            GameObject.Destroy(gameObject);
+            Destroy(gameObject);
         }
     }
 }
