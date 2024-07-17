@@ -32,7 +32,6 @@ public abstract class PlayerController : MonoBehaviour
     public GameObject Player2;
 
     public Transform firePoint; // 射撃位置
-    public GameObject bulletPrefab; // Bombのprefab
     public float minPower = 10f; // 最小の力
     public float maxPower = 100f; // 最大の力
     public float powerIncreaseRate = 10f; // 1秒間に溜まる力
@@ -40,8 +39,9 @@ public abstract class PlayerController : MonoBehaviour
 
     private bool isPlayer1Turn = true;
     private float fireAngle = 0f;
-    private float currentPower = 0f;
+    public float currentPower = 0f;
     private bool isCharging = false;
+    private PlayerManager playerManager;
 
     public void SetPlayer(bool isTurn)
     {
@@ -56,6 +56,15 @@ public abstract class PlayerController : MonoBehaviour
     public void HandlePlayerInput()
     {
         // if (!isPlayer1Turn) return;
+
+        
+        //プレイヤーマネージャーからcurrentStateの値を取ってきて
+        //ターンPlayer１とPlayer２を振り分け
+        // if (playerManager.instance.currentState != "PLAYER1TURN")
+        // {
+        //     Player1.return;
+        // }
+
 
         // 矢印キーで方角を調整
         if (Input.GetKey(KeyCode.W))
@@ -87,20 +96,12 @@ public abstract class PlayerController : MonoBehaviour
         if (Input.GetMouseButtonUp(0))
         {
             isCharging = false;
-            FireBullet();
             FindObjectOfType<InGame_GM>().SwitchTurn();
-             // FindObjectOfType<PlayerManager>().SwitchToNextTurn();
+            FindObjectOfType<InGame_GM>().FireBullet();
         }
 
         // 発射の向きを更新
         firePoint.rotation = Quaternion.Euler(0, 0, fireAngle);
-    }
-
-    void FireBullet()
-    {
-        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
-        Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
-        rb.velocity = firePoint.up * currentPower;
     }
 
 

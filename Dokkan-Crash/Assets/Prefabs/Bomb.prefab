@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 5619902122827995886}
   m_Layer: 0
   m_Name: Bomb
-  m_TagString: Untagged
+  m_TagString: Bomb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -49,8 +49,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   explosionPrefab: {fileID: 8202424974277963421, guid: a9c373c3c978beb438ed7c61872a335c, type: 3}
-  tilemap: {fileID: 0}
-  explosionRadius: 1.5
 --- !u!212 &812271929239816227
 SpriteRenderer:
   m_ObjectHideFlags: 0

@@ -818,6 +818,8 @@ MonoBehaviour:
   MoveSpeed: 6
   JumpCount: 2
   jumpForce: 10
+  Player1: {fileID: 0}
+  Player2: {fileID: 0}
   firePoint: {fileID: 4609906825441622158}
   bulletPrefab: {fileID: 6020469347093829066, guid: 3d80c139f9318f84eb868f335a0883a5, type: 3}
   minPower: 1
@@ -849,7 +851,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!70 &3051640891963947907
 CapsuleCollider2D:
