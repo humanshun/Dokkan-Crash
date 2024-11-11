@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class DestroyOnAnimationEnd : MonoBehaviour
+public class Explosion : MonoBehaviour
 {
     private Animator animator;
 

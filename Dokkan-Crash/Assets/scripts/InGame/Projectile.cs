@@ -22,5 +22,6 @@ public class Projectile : MonoBehaviour
         }
         
         Destroy(gameObject); // 弾を消す
+        Instantiate(exprosion, transform.position, Quaternion.Euler(0, 0, 0));
     }
 }
