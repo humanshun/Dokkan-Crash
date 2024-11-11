@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
+    public GameObject exprosion;
     public int damage = 1; // 弾が与えるダメージ量
     private Rigidbody2D rb;
 
