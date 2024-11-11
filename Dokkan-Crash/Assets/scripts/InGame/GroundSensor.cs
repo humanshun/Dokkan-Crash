@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class GroundSensor : MonoBehaviour {
 
-    public PlayerController m_root;
+    public Swordman m_root;
 
     // Use this for initialization
     void Start()
     {
-        m_root = this.transform.root.GetComponent<PlayerController>();
+        m_root = this.transform.root.GetComponent<Swordman>();
        
     }
 

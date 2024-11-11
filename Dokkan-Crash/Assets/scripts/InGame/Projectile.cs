@@ -2,15 +2,14 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    public float speed = 10f;
-    public int damage = 1;
-
+    public int damage = 1; // 弾が与えるダメージ量
     private Rigidbody2D rb;
 
-    private void Start()
+    // 発射方向と速度を設定するメソッド
+    public void SetDirection(Vector2 direction, float speed)
     {
         rb = GetComponent<Rigidbody2D>();
-        rb.velocity = transform.right * speed;
+        rb.velocity = direction.normalized * speed;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

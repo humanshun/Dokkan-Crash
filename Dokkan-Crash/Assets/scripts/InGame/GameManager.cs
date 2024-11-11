@@ -3,7 +3,7 @@ using TMPro; // TextMeshProの名前空間を追加
 
 public class GameManager : MonoBehaviour
 {
-    public PlayerController1[] players; 
+    public Swordman[] players; 
     public TextMeshProUGUI turnText; // TextをTextMeshProUGUIに変更
 
     private int currentPlayerIndex = 0;
@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour
     public void CheckGameOver()
     {
         int activePlayers = 0;
-        foreach (PlayerController1 player in players)
+        foreach (Swordman player in players)
         {
             if (player.IsAlive)
                 activePlayers++;
