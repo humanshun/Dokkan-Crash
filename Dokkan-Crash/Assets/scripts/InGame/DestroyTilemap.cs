@@ -5,36 +5,28 @@ using UnityEngine.Tilemaps;
 
 public class DestroyTilemap : MonoBehaviour
 {
-    public float explosionRadius = 1.5f;
-    private Tilemap destroyTile;
-    void Start()
-    {
-        destroyTile = GetComponent<Tilemap>();
-    }
+    // 削除対象のタイルマップを設定
+    public Tilemap tilemap;
+
     void OnCollisionEnter2D(Collision2D collision)
     {
+        // 衝突したオブジェクトが "Bomb" タグを持っているか確認
         if (collision.gameObject.CompareTag("Bomb"))
         {
-            foreach (ContactPoint2D contact in collision.contacts)
+            // 衝突位置を取得
+            Vector3 hitPosition = Vector3.zero;
+
+            foreach (ContactPoint2D hit in collision.contacts)
             {
-                Vector3 hitPosition = Vector3.zero;
-                hitPosition.x = contact.point.x - 0.01f * contact.normal.x;
-                hitPosition.y = contact.point.y - 0.01f * contact.normal.y;
-                
-                Vector3Int cellPosition = destroyTile.WorldToCell(hitPosition);
-                destroyTile.SetTile(cellPosition, null); // タイルを削除
+                hitPosition.x = hit.point.x;
+                hitPosition.y = hit.point.y;
+
+                // ワールド座標からタイルマップのグリッド位置に変換
+                Vector3Int tilePosition = tilemap.WorldToCell(hitPosition);
+
+                // タイルを消す
+                tilemap.SetTile(tilePosition, null);
             }
-            // Debug.Log("ボムが当たりました");
-            // Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, explosionRadius);
-            // foreach (Collider2D col in colliders)
-            // {
-            //     // オブジェクトがTilemapに含まれている場合のみタイルを削除する
-            //     Vector3Int cellPosition = destroyTile.WorldToCell(col.transform.position);
-            //     if (destroyTile.HasTile(cellPosition))
-            //     {
-            //         destroyTile.SetTile(cellPosition, null); // タイルを削除する
-            //     }
-            // }
         }
     }
 }
