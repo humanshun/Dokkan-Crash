@@ -104,7 +104,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8220045035598987107
 RectTransform:
   m_ObjectHideFlags: 0
@@ -589,7 +589,9 @@ MonoBehaviour:
   MoveSpeed: 6
   JumpCount: 2
   jumpForce: 15
-  health: 3
+  maxHealth: 5
+  health: 5
+  healthSlider: {fileID: 0}
   projectilePrefab: {fileID: 6020469347093829066, guid: 3d80c139f9318f84eb868f335a0883a5, type: 3}
   firePoint: {fileID: 5442380504521380652}
   chargeSlider: {fileID: 6510297179926274537}
@@ -756,7 +758,7 @@ RectTransform:
   m_Father: {fileID: 8114948681576244506}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}

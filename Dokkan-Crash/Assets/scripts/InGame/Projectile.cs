@@ -5,6 +5,12 @@ public class Projectile : MonoBehaviour
     public GameObject exprosion;
     public int damage = 1; // 弾が与えるダメージ量
     private Rigidbody2D rb;
+    private GameManager gameManager;
+
+    private void Start()
+    {
+        gameManager = FindObjectOfType<GameManager>();
+    }
 
     // 発射方向と速度を設定するメソッド
     public void SetDirection(Vector2 direction, float speed)
@@ -15,13 +21,22 @@ public class Projectile : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        PlayerController1 player = collision.gameObject.GetComponent<PlayerController1>();
-        if (player != null)
+        if (collision.gameObject.CompareTag("Player"))
         {
-            player.TakeDamage(damage);
+            PlayerController player = collision.gameObject.GetComponent<PlayerController>();
+            if (player != null)
+            {
+                player.TakeDamage(damage);
+            }
         }
+        if (collision.gameObject.CompareTag("Block"))
+        {
+            Destroy(collision.gameObject);
+        }
+        
         
         Destroy(gameObject); // 弾を消す
         Instantiate(exprosion, transform.position, Quaternion.Euler(0, 0, 0));
+        gameManager.EndTurn();
     }
 }

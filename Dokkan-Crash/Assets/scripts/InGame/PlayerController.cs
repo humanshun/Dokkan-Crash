@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 // PlayerControllerはキャラクターの動作を管理する抽象クラスです。
 // 他のクラスでこのクラスを継承することで、共通の移動やジャンプの機能を実装できます。
@@ -24,10 +25,60 @@ public abstract class PlayerController : MonoBehaviour
     public float MoveSpeed = 6; // キャラクターの移動速度
     public int JumpCount = 2; // ジャンプ可能回数
     public float jumpForce = 15f; // ジャンプ時の力
-    public int health = 3;  // キャラクターの体力
-    public bool IsAlive => health > 0;  // 体力が0より大きいかの確認
+    public int maxHealth = 5;  // 最大HP
+    public int health;         // 現在のHP
+    public Slider healthSlider; // HPを表示するスライダー
+    public bool IsAlive => health > 0;
 
     // === メソッド ===
+    private void Start()
+    {
+        health = maxHealth;
+        if (healthSlider != null)
+        {
+            healthSlider.maxValue = maxHealth;
+            healthSlider.value = health;
+            Debug.Log("Slider initialized with maxValue: " + healthSlider.maxValue + ", value: " + healthSlider.value);
+        }
+        else
+        {
+            Debug.LogWarning("Health slider is not assigned in the Inspector.");
+        }
+    }
+
+    // TakeDamageメソッド：ダメージを受けてHPを減少させる
+    public void TakeDamage(int damage)
+    {
+        health -= damage;
+        health = Mathf.Clamp(health, 0, maxHealth); // HPが0未満にならないように
+        UpdateHealthSlider(); // HPスライダーを更新
+
+        Debug.Log("Current Health: " + health); // 現在のHPを確認
+
+        if (health <= 0)
+        {
+            m_Anim.Play("Die");
+            OnDeath();
+        }
+    }
+
+    // UpdateHealthSliderメソッド：HPスライダーを更新する
+    private void UpdateHealthSlider()
+    {
+        if (healthSlider != null)
+    {
+        // healthをmaxHealthで割って0から1の割合に変換してスライダーに設定
+        healthSlider.value = (float)health / maxHealth;
+        Debug.Log("Slider Value Updated: " + healthSlider.value); // 更新されたスライダーの値を確認
+    }
+    else
+    {
+        Debug.LogWarning("Health slider is not assigned.");
+    }
+    }
+
+    // 抽象メソッド：キャラクター死亡時の処理
+    protected abstract void OnDeath();
 
     // AnimUpdateは、キャラクターのアニメーションを更新します。
     protected void AnimUpdate()

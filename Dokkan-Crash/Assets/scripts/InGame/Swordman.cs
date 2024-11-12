@@ -14,6 +14,7 @@ public class Swordman : PlayerController
     private float minSpeed = 5f; // 最小発射速度
     private float maxSpeed = 20f; // 最大発射速度
     private bool isCharging = false; // チャージ中かどうか
+    private bool canMove = true; // プレイヤーが動けるかどうかを制御するフラグ
 
     public Slider chargeSlider; // チャージ進行を表示するスライダー
 
@@ -29,6 +30,8 @@ public class Swordman : PlayerController
             chargeSlider.maxValue = maxChargeTime; //スライダーの最大値を設定
             chargeSlider.value = 0f; //スライダーの初期値を設定
         }
+
+        chargeSlider.gameObject.SetActive(false);
     }
 
     private void Update()
@@ -43,12 +46,21 @@ public class Swordman : PlayerController
     public void StartTurn()
     {
         isTurnActive = true;
+        canMove = true; // ターン開始時に動けるようにする
+        if (chargeSlider != null)
+        {
+            chargeSlider.gameObject.SetActive(true); // ターン開始時にスライダーを表示
+        }
     }
 
     public void EndTurn()
     {
         isTurnActive = false;
         ResetCharge(); // ターン終了時にチャージをリセット
+        if (chargeSlider != null)
+        {
+            chargeSlider.gameObject.SetActive(false); // ターン終了時にスライダーを非表示
+        }
     }
     private void RotateFirePointToMouse()
     {
@@ -77,6 +89,8 @@ public class Swordman : PlayerController
 
     private void CheckInput()
     {
+        if (!canMove) return; // プレイヤーが動けないときは入力を受け付けない
+
         // Sキーが押された時の処理（座る動作）
         if (Input.GetKeyDown(KeyCode.S))
         {
@@ -122,7 +136,6 @@ public class Swordman : PlayerController
             {
                 m_Anim.Play("Attack");
                 ShootChargedProjectile(); // チャージが完了したら発射
-                gameManager.EndTurn();
             }
             if (!m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Charging"))
             {
@@ -256,6 +269,8 @@ public class Swordman : PlayerController
 
         proj.SetDirection(shootDirection, speed);
         ResetCharge();
+
+        canMove = false; // 発射後に動けなくする
     }
 
     // チャージ状態をリセット
@@ -266,19 +281,14 @@ public class Swordman : PlayerController
         UpdateChargeSlider(); // スライダーをリセット
     }
 
-    public void TakeDamage(int damage)
-    {
-        health -= damage;
-        if (health <= 0)
-        {
-            m_Anim.Play("Die");
-            gameManager.CheckGameOver();
-        }
-    }
-
     protected override void LandingEvent()
     {
         if (!m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Run") && !m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
             m_Anim.Play("Idle");
+    }
+    // キャラクター死亡時の処理
+    protected override void OnDeath()
+    {
+        gameManager.CheckGameOver();
     }
 }
