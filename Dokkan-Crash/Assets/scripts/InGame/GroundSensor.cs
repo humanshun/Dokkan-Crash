@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class GroundSensor : MonoBehaviour {
 
-    public Swordman m_root;
+    public PlayerController m_root;
 
     // Use this for initialization
     void Start()
     {
-        m_root = this.transform.root.GetComponent<Swordman>();
+        m_root = this.transform.root.GetComponent<PlayerController>();
        
     }
 
@@ -51,7 +51,4 @@ public class GroundSensor : MonoBehaviour {
         m_root.isGrounded = false;
      
     }
-
-
-
 }
