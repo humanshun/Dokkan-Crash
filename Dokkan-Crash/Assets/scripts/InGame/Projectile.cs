@@ -1,9 +1,12 @@
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class Projectile : MonoBehaviour
 {
-    public GameObject exprosion;
+    public GameObject explosion;
     public float damage = 0.2f; // 弾が与えるダメージ量
+    public float explosionRadius = 1f; // タイル削除の範囲（半径）
+    public float playerDamageRadius = 2.0f; // プレイヤーにダメージを与える範囲
     private Rigidbody2D rb;
     private GameManager gameManager;
 
@@ -29,14 +32,56 @@ public class Projectile : MonoBehaviour
                 player.TakeDamage(damage);
             }
         }
-        if (collision.gameObject.CompareTag("Block"))
+        else if (collision.gameObject.CompareTag("Block"))
         {
             Destroy(collision.gameObject);
         }
-        
-        
+        else if (collision.gameObject.CompareTag("Tilemap"))
+        {
+            Tilemap tilemap = collision.gameObject.GetComponent<Tilemap>();
+            if (tilemap != null)
+            {
+                Vector3 hitPosition = collision.contacts[0].point;
+                Vector3Int centerCell = tilemap.WorldToCell(hitPosition);
+
+                for (int x = -Mathf.CeilToInt(explosionRadius); x <= Mathf.CeilToInt(explosionRadius); x++)
+                {
+                    for (int y = -Mathf.CeilToInt(explosionRadius); y <= Mathf.CeilToInt(explosionRadius); y++)
+                    {
+                        Vector3Int tilePos = new Vector3Int(centerCell.x + x, centerCell.y + y, centerCell.z);
+
+                        if (Vector3Int.Distance(tilePos, centerCell) <= explosionRadius)
+                        {
+                            tilemap.SetTile(tilePos, null);
+                        }
+                    }
+                }
+            }
+        }
+
+        // プレイヤーにダメージを与える処理
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, playerDamageRadius);
+        foreach (Collider2D collider in colliders)
+        {
+            if (collider.CompareTag("Player"))
+            {
+                PlayerController player = collider.GetComponent<PlayerController>();
+                if (player != null)
+                {
+                    player.TakeDamage(damage);
+                }
+            }
+        }
+
         Destroy(gameObject); // 弾を消す
-        Instantiate(exprosion, transform.position, Quaternion.Euler(0, 0, 0));
+        Instantiate(explosion, transform.position, Quaternion.identity);
         gameManager.EndTurn();
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        // プレイヤーにダメージを与える範囲を視覚化
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, playerDamageRadius);
     }
 }
