@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class Swordman : PlayerController
 {
@@ -14,12 +15,20 @@ public class Swordman : PlayerController
     private float maxSpeed = 20f; // 最大発射速度
     private bool isCharging = false; // チャージ中かどうか
 
+    public Slider chargeSlider; // チャージ進行を表示するスライダー
+
     private void Start()
     {
         m_CapsulleCollider = GetComponent<CapsuleCollider2D>();
         m_Anim = transform.Find("model").GetComponent<Animator>();
         m_rigidbody = GetComponent<Rigidbody2D>();
         gameManager = FindObjectOfType<GameManager>();
+
+        if (chargeSlider != null)
+        {
+            chargeSlider.maxValue = maxChargeTime; //スライダーの最大値を設定
+            chargeSlider.value = 0f; //スライダーの初期値を設定
+        }
     }
 
     private void Update()
@@ -27,6 +36,7 @@ public class Swordman : PlayerController
         if (isTurnActive && IsAlive)
         {
             CheckInput();
+            RotateFirePointToMouse(); // マウスの方向にFirePointを向ける
         }
     }
 
@@ -39,6 +49,30 @@ public class Swordman : PlayerController
     {
         isTurnActive = false;
         ResetCharge(); // ターン終了時にチャージをリセット
+    }
+    private void RotateFirePointToMouse()
+    {
+        // マウス位置を取得してワールド座標に変換
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePosition.z = 0f; // Z軸を0に固定
+
+        // FirePointからマウス位置への方向ベクトルを計算
+        Vector2 direction = (mousePosition - firePoint.position).normalized;
+
+        // プレイヤーの向きを確認
+        bool isFacingLeft = transform.localScale.x < 0;
+
+        // 向きに基づいて角度を計算
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+        // プレイヤーが左を向いている場合、角度を反転
+        if (isFacingLeft)
+        {
+            angle += 180f; // 左向きの場合、矢印を反転
+        }
+
+        // FirePointの回転を設定
+        firePoint.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
     }
 
     private void CheckInput()
@@ -170,22 +204,6 @@ public class Swordman : PlayerController
                 }
             }
         }
-
-        // if (Input.GetKeyDown(KeyCode.Mouse0))
-        // {
-        //     StartCharging(); // チャージを開始
-        // }
-
-        // if (Input.GetKey(KeyCode.Mouse0))
-        // {
-        //     ChargeProjectile(); // チャージを継続
-        // }
-
-        // if (Input.GetKeyUp(KeyCode.Mouse0))
-        // {
-        //     ShootChargedProjectile(); // チャージが完了したら発射
-        //     gameManager.EndTurn();
-        // }
     }
 
     // チャージを開始する
@@ -193,6 +211,7 @@ public class Swordman : PlayerController
     {
         isCharging = true;
         chargeTime = 0f; // チャージ時間をリセット
+        UpdateChargeSlider(); // スライダーの初期値を設定
     }
 
     // チャージを継続する
@@ -203,6 +222,15 @@ public class Swordman : PlayerController
             // チャージ時間を増加（ただし、最大値まで）
             chargeTime += Time.deltaTime;
             chargeTime = Mathf.Clamp(chargeTime, 0f, maxChargeTime);
+            UpdateChargeSlider(); // スライダーの値を更新
+        }
+    }
+    // スライダーの値を更新する
+    private void UpdateChargeSlider()
+    {
+        if (chargeSlider != null)
+        {
+            chargeSlider.value = chargeTime;
         }
     }
 
@@ -211,15 +239,22 @@ public class Swordman : PlayerController
     {
         if (!isCharging) return;
 
-        // 最小速度と最大速度の間でスピードを計算
         float speed = Mathf.Lerp(minSpeed, maxSpeed, chargeTime / maxChargeTime);
-
-        // 弾を生成し、発射方向と速度を設定
         GameObject projectile = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
-        Projectile proj = projectile.GetComponent<Projectile>();
-        Vector2 shootDirection = transform.localScale.x > 0 ? Vector2.left : Vector2.right;
-        proj.SetDirection(shootDirection, speed);
 
+        // Projectileコンポーネントを取得して、発射方向と速度を設定
+        Projectile proj = projectile.GetComponent<Projectile>();
+
+        // firePointの向いている方向を基準に発射方向を決定
+        Vector2 shootDirection = firePoint.right; // firePointの正面方向を取得
+
+        // プレイヤーが左を向いている場合、方向を逆にする
+        if (transform.localScale.x < 0)
+        {
+            shootDirection = -firePoint.right; // 左向きなら反転
+        }
+
+        proj.SetDirection(shootDirection, speed);
         ResetCharge();
     }
 
@@ -228,6 +263,7 @@ public class Swordman : PlayerController
     {
         isCharging = false;
         chargeTime = 0f;
+        UpdateChargeSlider(); // スライダーをリセット
     }
 
     public void TakeDamage(int damage)
