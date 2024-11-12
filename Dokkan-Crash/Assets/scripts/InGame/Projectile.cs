@@ -75,7 +75,10 @@ public class Projectile : MonoBehaviour
 
         Destroy(gameObject); // 弾を消す
         Instantiate(explosion, transform.position, Quaternion.identity);
-        gameManager.EndTurn();
+        if (gameManager.isGameOver != true)
+        {
+            gameManager.EndTurn();
+        }
     }
 
     private void OnDrawGizmosSelected()

@@ -588,7 +588,7 @@ MonoBehaviour:
   m_rigidbody: {fileID: 0}
   MoveSpeed: 6
   JumpCount: 2
-  jumpForce: 15
+  jumpForce: 10
   maxHealth: 1
   health: 1
   healthSlider: {fileID: 0}

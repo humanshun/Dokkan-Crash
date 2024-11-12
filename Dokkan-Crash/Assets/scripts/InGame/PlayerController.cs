@@ -56,12 +56,13 @@ public abstract class PlayerController : MonoBehaviour
 
         UpdateHealthSlider(); // HPスライダーを更新
 
-        if (health <= 0)
+        if (health <= 0.01f)
         {
             m_Anim.Play("Die");
             OnDeath();
         }
     }
+
 
     // UpdateHealthSliderメソッド：HPスライダーを更新する
     private void UpdateHealthSlider()

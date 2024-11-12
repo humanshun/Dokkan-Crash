@@ -24,16 +24,19 @@ public class Swordman : PlayerController
         m_CapsulleCollider = GetComponent<CapsuleCollider2D>();
         m_Anim = transform.Find("model").GetComponent<Animator>();
         m_rigidbody = GetComponent<Rigidbody2D>();
+
+        // GameManagerのインスタンスを取得
         gameManager = FindObjectOfType<GameManager>();
 
         if (chargeSlider != null)
         {
-            chargeSlider.maxValue = maxChargeTime; //スライダーの最大値を設定
-            chargeSlider.value = 0f; //スライダーの初期値を設定
+            chargeSlider.maxValue = maxChargeTime; // スライダーの最大値を設定
+            chargeSlider.value = 0f; // スライダーの初期値を設定
         }
 
         chargeSlider.gameObject.SetActive(false);
     }
+
 
     private void Update()
     {
