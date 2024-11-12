@@ -131,10 +131,6 @@ public abstract class PlayerController : MonoBehaviour
                     LandingEvent(); // 着地イベントを発生させる
                     OnceJumpRayCheck = false;
                 }
-                else
-                {
-                    Debug.Log("空中にいる");
-                }
             }
             PretmpY = transform.position.y; // 現在のY位置を記録
         }

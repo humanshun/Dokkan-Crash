@@ -26,7 +26,6 @@ public class Swordman : PlayerController
     {
         if (isTurnActive && IsAlive)
         {
-            HandleMovement();
             CheckInput();
         }
     }
@@ -44,21 +43,149 @@ public class Swordman : PlayerController
 
     private void CheckInput()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        // Sキーが押された時の処理（座る動作）
+        if (Input.GetKeyDown(KeyCode.S))
         {
-            StartCharging(); // チャージを開始
+            IsSit = true;
+            m_Anim.Play("Sit");
+        }
+        else if (Input.GetKeyUp(KeyCode.S))
+        {
+            m_Anim.Play("Idle");
+            IsSit = false;
         }
 
-        if (Input.GetKey(KeyCode.Mouse0))
+        // 座りや死亡アニメーション中は他のアニメーションを再生しない
+        if (m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Sit") || m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Die"))
         {
-            ChargeProjectile(); // チャージを継続
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                if (currentJumpCount < JumpCount)  // ジャンプ可能回数チェック
+                {
+                    DownJump(); // 下方向へのジャンプ
+                }
+            }
+            return;
         }
 
-        if (Input.GetKeyUp(KeyCode.Mouse0))
+        m_MoveX = Input.GetAxis("Horizontal"); // 横方向の入力を取得
+
+        GroundCheckUpdate(); // 地面チェック
+
+        // 攻撃アニメーション中でない場合の処理
+        if (!m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
         {
-            ShootChargedProjectile(); // チャージが完了したら発射
-            gameManager.EndTurn();
+            if (Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                StartCharging(); // チャージを開始
+            }
+            if (Input.GetKey(KeyCode.Mouse0))
+            {
+                m_Anim.Play("Charging"); // 攻撃アニメーション再生
+                ChargeProjectile(); // チャージを継続
+            }
+            if (Input.GetKeyUp(KeyCode.Mouse0))
+            {
+                m_Anim.Play("Attack");
+                ShootChargedProjectile(); // チャージが完了したら発射
+                gameManager.EndTurn();
+            }
+            if (!m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Charging"))
+            {
+                if (m_MoveX == 0)
+                {
+                    if (!OnceJumpRayCheck)
+                        m_Anim.Play("Idle"); // 立ちアニメーション再生
+                }
+                else
+                {
+                    m_Anim.Play("Run"); // 走りアニメーション再生
+                }
+            }
         }
+
+        // 1キーが押された時の処理（死亡動作）
+        if (Input.GetKey(KeyCode.Alpha1))
+        {
+            m_Anim.Play("Die");
+        }
+
+        // その他の移動入力処理
+        if (Input.GetKey(KeyCode.D))
+        {
+            if (isGrounded) // 地面にいる場合
+            {
+                if (m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+                    return;
+
+                transform.transform.Translate(Vector2.right * m_MoveX * MoveSpeed * Time.deltaTime); // 右方向への移動
+            }
+            else
+            {
+                transform.transform.Translate(new Vector3(m_MoveX * MoveSpeed * Time.deltaTime, 0, 0)); // 空中での移動
+            }
+
+            if (m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+                return;
+
+            if (!Input.GetKey(KeyCode.A))
+                Filp(false); // キャラクターを右向きに反転
+        }
+        else if (Input.GetKey(KeyCode.A))
+        {
+            if (isGrounded) // 地面にいる場合
+            {
+                if (m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+                    return;
+
+                transform.transform.Translate(Vector2.right * m_MoveX * MoveSpeed * Time.deltaTime); // 左方向への移動
+            }
+            else
+            {
+                transform.transform.Translate(new Vector3(m_MoveX * MoveSpeed * Time.deltaTime, 0, 0)); // 空中での移動
+            }
+
+            if (m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+                return;
+
+            if (!Input.GetKey(KeyCode.D))
+                Filp(true); // キャラクターを左向きに反転
+        }
+
+        // スペースキーが押された時の処理（ジャンプ）
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+                return;
+
+            if (currentJumpCount < JumpCount) // ジャンプ可能回数チェック
+            {
+                if (!IsSit)
+                {
+                    prefromJump(); // ジャンプ動作
+                }
+                else
+                {
+                    DownJump(); // 下方向へのジャンプ
+                }
+            }
+        }
+
+        // if (Input.GetKeyDown(KeyCode.Mouse0))
+        // {
+        //     StartCharging(); // チャージを開始
+        // }
+
+        // if (Input.GetKey(KeyCode.Mouse0))
+        // {
+        //     ChargeProjectile(); // チャージを継続
+        // }
+
+        // if (Input.GetKeyUp(KeyCode.Mouse0))
+        // {
+        //     ShootChargedProjectile(); // チャージが完了したら発射
+        //     gameManager.EndTurn();
+        // }
     }
 
     // チャージを開始する
@@ -101,41 +228,6 @@ public class Swordman : PlayerController
     {
         isCharging = false;
         chargeTime = 0f;
-    }
-
-    private void HandleMovement()
-    {
-        m_MoveX = Input.GetAxis("Horizontal");
-        transform.Translate(m_MoveX * MoveSpeed * Time.deltaTime, 0, 0);
-
-        if (m_MoveX != 0)
-        {
-            m_Anim.Play("Run");
-            Filp(m_MoveX < 0);
-        }
-        else
-        {
-            m_Anim.Play("Idle");
-        }
-
-        // スペースキーが押された時の処理（ジャンプ）
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            if (m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
-                return;
-
-            if (currentJumpCount < JumpCount) // ジャンプ可能回数チェック
-            {
-                if (!IsSit)
-                {
-                    prefromJump(); // ジャンプ動作
-                }
-                else
-                {
-                    DownJump(); // 下方向へのジャンプ
-                }
-            }
-        }
     }
 
     public void TakeDamage(int damage)
