@@ -25,35 +25,36 @@ public abstract class PlayerController : MonoBehaviour
     public float MoveSpeed = 6; // キャラクターの移動速度
     public int JumpCount = 2; // ジャンプ可能回数
     public float jumpForce = 15f; // ジャンプ時の力
-    public int maxHealth = 5;  // 最大HP
-    public int health;         // 現在のHP
+    public float maxHealth = 1;  // 最大HP
+    public float health;         // 現在のHP
     public Slider healthSlider; // HPを表示するスライダー
     public bool IsAlive => health > 0;
 
     // === メソッド ===
-    private void Start()
+    protected virtual void Start()
     {
         health = maxHealth;
+        
         if (healthSlider != null)
         {
             healthSlider.maxValue = maxHealth;
             healthSlider.value = health;
-            Debug.Log("Slider initialized with maxValue: " + healthSlider.maxValue + ", value: " + healthSlider.value);
-        }
-        else
-        {
-            Debug.LogWarning("Health slider is not assigned in the Inspector.");
         }
     }
 
     // TakeDamageメソッド：ダメージを受けてHPを減少させる
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
         health -= damage;
         health = Mathf.Clamp(health, 0, maxHealth); // HPが0未満にならないように
-        UpdateHealthSlider(); // HPスライダーを更新
 
-        Debug.Log("Current Health: " + health); // 現在のHPを確認
+        // 小さな誤差を0として扱う
+        if (health < 0.01f) 
+        {
+            health = 0;
+        }
+
+        UpdateHealthSlider(); // HPスライダーを更新
 
         if (health <= 0)
         {
@@ -66,15 +67,10 @@ public abstract class PlayerController : MonoBehaviour
     private void UpdateHealthSlider()
     {
         if (healthSlider != null)
-    {
-        // healthをmaxHealthで割って0から1の割合に変換してスライダーに設定
-        healthSlider.value = (float)health / maxHealth;
-        Debug.Log("Slider Value Updated: " + healthSlider.value); // 更新されたスライダーの値を確認
-    }
-    else
-    {
-        Debug.LogWarning("Health slider is not assigned.");
-    }
+        {
+            // healthをスライダーに設定
+            healthSlider.value = health;
+        }
     }
 
     // 抽象メソッド：キャラクター死亡時の処理

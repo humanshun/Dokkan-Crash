@@ -18,8 +18,9 @@ public class Swordman : PlayerController
 
     public Slider chargeSlider; // チャージ進行を表示するスライダー
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         m_CapsulleCollider = GetComponent<CapsuleCollider2D>();
         m_Anim = transform.Find("model").GetComponent<Animator>();
         m_rigidbody = GetComponent<Rigidbody2D>();

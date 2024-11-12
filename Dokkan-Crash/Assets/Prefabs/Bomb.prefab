@@ -49,7 +49,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   exprosion: {fileID: 8202424974277963421, guid: a9c373c3c978beb438ed7c61872a335c, type: 3}
-  damage: 1
+  damage: 0.2
 --- !u!212 &812271929239816227
 SpriteRenderer:
   m_ObjectHideFlags: 0

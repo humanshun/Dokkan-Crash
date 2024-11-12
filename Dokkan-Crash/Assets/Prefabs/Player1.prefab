@@ -589,8 +589,8 @@ MonoBehaviour:
   MoveSpeed: 6
   JumpCount: 2
   jumpForce: 15
-  maxHealth: 5
-  health: 5
+  maxHealth: 1
+  health: 1
   healthSlider: {fileID: 0}
   projectilePrefab: {fileID: 6020469347093829066, guid: 3d80c139f9318f84eb868f335a0883a5, type: 3}
   firePoint: {fileID: 5442380504521380652}
