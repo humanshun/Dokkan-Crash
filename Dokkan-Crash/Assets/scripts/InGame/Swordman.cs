@@ -117,6 +117,25 @@ public class Swordman : PlayerController
         {
             m_Anim.Play("Idle");
         }
+
+        // スペースキーが押された時の処理（ジャンプ）
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+                return;
+
+            if (currentJumpCount < JumpCount) // ジャンプ可能回数チェック
+            {
+                if (!IsSit)
+                {
+                    prefromJump(); // ジャンプ動作
+                }
+                else
+                {
+                    DownJump(); // 下方向へのジャンプ
+                }
+            }
+        }
     }
 
     public void TakeDamage(int damage)
