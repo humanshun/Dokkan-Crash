@@ -13,11 +13,7 @@ public class TitleInstanceBomb : MonoBehaviour
         Rigidbody2D rb = instance.GetComponent<Rigidbody2D>();
         if (rb != null)
         {
-            rb.AddForce(transform.forward * throwForce);
-        }
-        else
-        {
-            Debug.LogWarning("リジッドボディがアタッチされてない");
+            rb.AddForce(transform.right * throwForce);
         }
     }
 }

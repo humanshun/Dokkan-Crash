@@ -30,11 +30,15 @@ public class Projectile : MonoBehaviour
             if (player != null)
             {
                 player.TakeDamage(damage);
+                Destroy(gameObject); // 弾を消す
+                Instantiate(explosion, transform.position, Quaternion.identity);
             }
         }
         else if (collision.gameObject.CompareTag("Wall"))
         {
             Destroy(collision.gameObject);
+            Destroy(gameObject); // 弾を消す
+            Instantiate(explosion, transform.position, Quaternion.identity);
         }
         else if (collision.gameObject.CompareTag("Tilemap"))
         {
@@ -57,6 +61,8 @@ public class Projectile : MonoBehaviour
                     }
                 }
             }
+            Destroy(gameObject); // 弾を消す
+            Instantiate(explosion, transform.position, Quaternion.identity);
         }
 
         // プレイヤーにダメージを与える処理
@@ -72,10 +78,7 @@ public class Projectile : MonoBehaviour
                 }
             }
         }
-
-        Destroy(gameObject); // 弾を消す
-        Instantiate(explosion, transform.position, Quaternion.identity);
-        if (gameManager.isGameOver != true)
+        if (gameManager != null && gameManager.isGameOver != true)
         {
             gameManager.EndTurn();
         }
