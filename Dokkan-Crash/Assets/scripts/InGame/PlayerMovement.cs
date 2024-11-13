@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class Swordman : PlayerController
+public class PlayerMovement : PlayerController
 {
     public GameObject projectilePrefab;
     public Transform firePoint;

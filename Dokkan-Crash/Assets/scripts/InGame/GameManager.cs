@@ -4,7 +4,7 @@ using TMPro; // TextMeshProの名前空間を追加
 
 public class GameManager : MonoBehaviour
 {
-    public Swordman[] players; 
+    public PlayerMovement[] players; 
     public TextMeshProUGUI turnText; // TextをTextMeshProUGUIに変更
     public Animator textAnimator;
 
@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
     public void CheckGameOver()
     {
         // 勝利したプレイヤーを探す
-        Swordman winningPlayer = null;
+        PlayerMovement winningPlayer = null;
         foreach (var player in players)
         {
             if (player.IsAlive) // プレイヤーが生存している場合に勝者として設定

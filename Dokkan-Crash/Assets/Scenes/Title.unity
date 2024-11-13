@@ -698,8 +698,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7eebec15d69157e44a3ec6c6763f433b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: InGame
-  startButton: {fileID: 1583200805}
 --- !u!58 &1583200809
 CircleCollider2D:
   m_ObjectHideFlags: 0

@@ -21,7 +21,7 @@ public class UIController : MonoBehaviour
 
     private void UpdateHealthUI()
     {
-        Swordman currentPlayer = gameManager.players[gameManager.CurrentPlayerIndex];
+        PlayerMovement currentPlayer = gameManager.players[gameManager.CurrentPlayerIndex];
         healthText.text = "Health: " + currentPlayer.health;
     }
 

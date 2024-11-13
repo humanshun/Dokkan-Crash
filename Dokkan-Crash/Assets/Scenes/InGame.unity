@@ -3988,10 +3988,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1249173670229715205, guid: 12765dacf82c55b4ca8ca9b95568cc47, type: 3}
-      propertyPath: jumpForce
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 1249173670229715205, guid: 12765dacf82c55b4ca8ca9b95568cc47, type: 3}
       propertyPath: healthSlider
       value: 
       objectReference: {fileID: 1822491692}

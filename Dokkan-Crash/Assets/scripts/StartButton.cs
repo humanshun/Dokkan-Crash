@@ -1,36 +1,41 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class StartButton : MonoBehaviour, IPointerDownHandler
+public class AlphaButton : MonoBehaviour, IPointerClickHandler
 {
-    private CircleCollider2D circleCollider;
-    public string sceneName;
-    public Button startButton;
+    private Image image;
 
-    void Start()
+    void Awake()
     {
-        circleCollider = GetComponent<CircleCollider2D>();
-        startButton.onClick.AddListener(SceneChange);
-    }
-    private void SceneChange()
-    {
-        SceneManager.LoadScene(sceneName);
+        image = GetComponent<Image>();
     }
 
-    public void OnPointerDown(PointerEventData eventData)
+    public void OnPointerClick(PointerEventData eventData)
     {
-        Vector2 localMousePosition = transform.InverseTransformPoint(eventData.position);
-        Debug.Log("Local Mouse Position: " + localMousePosition);
-        if (circleCollider.OverlapPoint(localMousePosition))
+        if (IsPixelOpaque(eventData))
         {
-            Debug.Log("Round button clicked!");
-            // ボタンのクリック処理をここに記述
+            // クリック時の動作をここに記述
+            Debug.Log("画像の不透明部分がクリックされました！");
         }
-        else
-        {
-            Debug.Log("Clicked outside the round button.");
-        }
+    }
+
+    private bool IsPixelOpaque(PointerEventData eventData)
+    {
+        Vector2 localPoint;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            image.rectTransform,
+            eventData.position,
+            eventData.pressEventCamera,
+            out localPoint
+        );
+
+        Rect rect = image.rectTransform.rect;
+        int x = Mathf.FloorToInt((localPoint.x - rect.x) * image.sprite.pixelsPerUnit / rect.width);
+        int y = Mathf.FloorToInt((localPoint.y - rect.y) * image.sprite.pixelsPerUnit / rect.height);
+
+        // 画像の透明度を取得
+        Color color = image.sprite.texture.GetPixel(x, y);
+        return color.a > 0.1f; // 不透明度が高い場合のみクリック判定
     }
 }
