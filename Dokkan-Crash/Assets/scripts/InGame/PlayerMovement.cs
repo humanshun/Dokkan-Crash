@@ -155,12 +155,6 @@ public class PlayerMovement : PlayerController
             }
         }
 
-        // 1キーが押された時の処理（死亡動作）
-        if (Input.GetKey(KeyCode.Alpha1))
-        {
-            m_Anim.Play("Die");
-        }
-
         // その他の移動入力処理
         if (Input.GetKey(KeyCode.D))
         {
@@ -294,5 +288,14 @@ public class PlayerMovement : PlayerController
     protected override void OnDeath()
     {
         gameManager.CheckGameOver();
+    }
+    private void OnCollisionEnter2D(Collision2D collision2D)
+    {
+        if (collision2D.gameObject.CompareTag("Die"))
+        {
+            chargeSlider.gameObject.SetActive(false);
+            TakeDamage(1000f);
+            OnDeath();
+        }
     }
 }

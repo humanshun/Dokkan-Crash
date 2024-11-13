@@ -8,6 +8,8 @@ TagManager:
   - Block
   - Bomb
   - Tilemap
+  - Die
+  - Wall
   layers:
   - Default
   - TransparentFX

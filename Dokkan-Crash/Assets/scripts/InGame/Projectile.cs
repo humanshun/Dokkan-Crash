@@ -32,7 +32,7 @@ public class Projectile : MonoBehaviour
                 player.TakeDamage(damage);
             }
         }
-        else if (collision.gameObject.CompareTag("Block"))
+        else if (collision.gameObject.CompareTag("Wall"))
         {
             Destroy(collision.gameObject);
         }
