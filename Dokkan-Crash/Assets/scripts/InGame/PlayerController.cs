@@ -17,6 +17,19 @@ public abstract class PlayerController : MonoBehaviour
     public Rigidbody2D m_rigidbody; // キャラクターのRigidbody2Dコンポーネント
     protected CapsuleCollider2D m_CapsulleCollider; // キャラクターのコライダー
     protected Animator m_Anim; // キャラクターのアニメーション制御
+    protected bool canMove = true; // キャラクターが移動可能かどうか
+
+    // Projectile関連の変数
+    public GameObject projectilePrefab; // 弾のプレハブ
+    public Transform firePoint;         // 発射位置
+
+    // チャージ関連変数
+    protected float chargeTime = 0f;      // チャージ時間
+    protected float maxChargeTime = 5f;   // 最大チャージ時間
+    protected float minSpeed = 5f;        // 最小発射速度
+    protected float maxSpeed = 20f;       // 最大発射速度
+    protected bool isCharging = false;    // チャージ中かどうか
+    public Slider chargeSlider;           // チャージ進行を表示するスライダー
 
     // === 設定用の変数 ===
     [Header("[Setting]")]
@@ -168,6 +181,65 @@ public abstract class PlayerController : MonoBehaviour
             }
             PretmpY = transform.position.y; // 現在のY位置を記録
         }
+    }
+    // チャージを開始する
+    protected void StartCharging()
+    {
+        isCharging = true;
+        chargeTime = 0f;
+        UpdateChargeSlider();
+    }
+
+    // チャージを継続する
+    protected void ChargeProjectile()
+    {
+        if (isCharging)
+        {
+            chargeTime += Time.deltaTime;
+            chargeTime = Mathf.Clamp(chargeTime, 0f, maxChargeTime);
+            UpdateChargeSlider();
+        }
+    }
+
+    // スライダーの値を更新する
+    protected void UpdateChargeSlider()
+    {
+        if (chargeSlider != null)
+        {
+            chargeSlider.value = chargeTime;
+        }
+    }
+
+    // チャージ状態をリセット
+    protected void ResetCharge()
+    {
+        isCharging = false;
+        chargeTime = 0f;
+        UpdateChargeSlider();
+    }
+    protected void ShootChargedProjectile()
+    {
+        if (!isCharging) return;
+
+        float speed = Mathf.Lerp(minSpeed, maxSpeed, chargeTime / maxChargeTime);
+        GameObject projectile = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
+
+        // Projectileコンポーネントを取得して、発射方向と速度を設定
+        Projectile proj = projectile.GetComponent<Projectile>();
+
+        // firePointの向いている方向を基準に発射方向を決定
+        Vector2 shootDirection = firePoint.right;
+
+        // プレイヤーが左を向いている場合、方向を逆にする
+        if (transform.localScale.x < 0)
+        {
+            shootDirection = -firePoint.right;
+        }
+
+        proj.SetDirection(shootDirection, speed);
+        ResetCharge();
+
+        canMove = false; // 発射後に動けなくする
     }
 
     // 抽象メソッド: LandingEventは継承先で定義し、着地時の処理を行う

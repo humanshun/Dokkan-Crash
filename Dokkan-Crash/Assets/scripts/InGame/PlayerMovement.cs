@@ -3,20 +3,9 @@ using UnityEngine.UI;
 
 public class PlayerMovement : PlayerController
 {
-    public GameObject projectilePrefab;
-    public Transform firePoint;
     
     private bool isTurnActive = false;
     private GameManager gameManager;
-
-    private float chargeTime = 0f; // チャージ時間
-    private float maxChargeTime = 3f; // 最大チャージ時間
-    private float minSpeed = 5f; // 最小発射速度
-    private float maxSpeed = 20f; // 最大発射速度
-    private bool isCharging = false; // チャージ中かどうか
-    private bool canMove = true; // プレイヤーが動けるかどうかを制御するフラグ
-
-    public Slider chargeSlider; // チャージ進行を表示するスライダー
 
     protected override void Start()
     {
@@ -94,6 +83,21 @@ public class PlayerMovement : PlayerController
     private void CheckInput()
     {
         if (!canMove) return; // プレイヤーが動けないときは入力を受け付けない
+        // チャージ処理
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            StartCharging(); // チャージを開始
+        }
+        if (Input.GetKey(KeyCode.Mouse0))
+        {
+            m_Anim.Play("Charging");
+            ChargeProjectile(); // チャージを継続
+        }
+        if (Input.GetKeyUp(KeyCode.Mouse0))
+        {
+            m_Anim.Play("Attack");
+            ShootChargedProjectile(); // チャージが完了したら発射
+    }
 
         // Sキーが押された時の処理（座る動作）
         if (Input.GetKeyDown(KeyCode.S))
@@ -224,68 +228,6 @@ public class PlayerMovement : PlayerController
                 }
             }
         }
-    }
-
-    // チャージを開始する
-    private void StartCharging()
-    {
-        isCharging = true;
-        chargeTime = 0f; // チャージ時間をリセット
-        UpdateChargeSlider(); // スライダーの初期値を設定
-    }
-
-    // チャージを継続する
-    private void ChargeProjectile()
-    {
-        if (isCharging)
-        {
-            // チャージ時間を増加（ただし、最大値まで）
-            chargeTime += Time.deltaTime;
-            chargeTime = Mathf.Clamp(chargeTime, 0f, maxChargeTime);
-            UpdateChargeSlider(); // スライダーの値を更新
-        }
-    }
-    // スライダーの値を更新する
-    private void UpdateChargeSlider()
-    {
-        if (chargeSlider != null)
-        {
-            chargeSlider.value = chargeTime;
-        }
-    }
-
-    // チャージ時間に基づいて弾を発射
-    private void ShootChargedProjectile()
-    {
-        if (!isCharging) return;
-
-        float speed = Mathf.Lerp(minSpeed, maxSpeed, chargeTime / maxChargeTime);
-        GameObject projectile = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
-
-        // Projectileコンポーネントを取得して、発射方向と速度を設定
-        Projectile proj = projectile.GetComponent<Projectile>();
-
-        // firePointの向いている方向を基準に発射方向を決定
-        Vector2 shootDirection = firePoint.right; // firePointの正面方向を取得
-
-        // プレイヤーが左を向いている場合、方向を逆にする
-        if (transform.localScale.x < 0)
-        {
-            shootDirection = -firePoint.right; // 左向きなら反転
-        }
-
-        proj.SetDirection(shootDirection, speed);
-        ResetCharge();
-
-        canMove = false; // 発射後に動けなくする
-    }
-
-    // チャージ状態をリセット
-    private void ResetCharge()
-    {
-        isCharging = false;
-        chargeTime = 0f;
-        UpdateChargeSlider(); // スライダーをリセット
     }
 
     protected override void LandingEvent()
