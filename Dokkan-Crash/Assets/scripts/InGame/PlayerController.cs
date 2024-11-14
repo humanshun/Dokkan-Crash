@@ -96,7 +96,11 @@ public abstract class PlayerController : MonoBehaviour
                 }
                 else
                 {
-                    m_Anim.Play("Run");
+                    // プレイヤーが地面にいる場合のみRunアニメーションを再生
+                    if (isGrounded)
+                    {
+                        m_Anim.Play("Run"); // 走りアニメーション再生
+                    }
                 }
             }
         }

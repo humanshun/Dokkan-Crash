@@ -143,7 +143,11 @@ public class PlayerMovement : PlayerController
                 }
                 else
                 {
-                    m_Anim.Play("Run"); // 走りアニメーション再生
+                    // プレイヤーが地面にいる場合のみRunアニメーションを再生
+                    if (isGrounded)
+                    {
+                        m_Anim.Play("Run"); // 走りアニメーション再生
+                    }
                 }
             }
         }
@@ -151,43 +155,51 @@ public class PlayerMovement : PlayerController
         // その他の移動入力処理
         if (Input.GetKey(KeyCode.D))
         {
-            if (isGrounded) // 地面にいる場合
+            if (!isCharging)
             {
+                if (isGrounded) // 地面にいる場合
+                {
+                    if (m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+                        return;
+
+                    transform.transform.Translate(Vector2.right * m_MoveX * MoveSpeed * Time.deltaTime); // 右方向への移動
+                }
+                else
+                {
+                    transform.transform.Translate(new Vector3(m_MoveX * MoveSpeed * Time.deltaTime, 0, 0)); // 空中での移動
+                }
+
                 if (m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
                     return;
 
-                transform.transform.Translate(Vector2.right * m_MoveX * MoveSpeed * Time.deltaTime); // 右方向への移動
+                if (!Input.GetKey(KeyCode.A))
+                    Filp(false); // キャラクターを右向きに反転
             }
-            else
-            {
-                transform.transform.Translate(new Vector3(m_MoveX * MoveSpeed * Time.deltaTime, 0, 0)); // 空中での移動
-            }
-
-            if (m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
-                return;
-
-            if (!Input.GetKey(KeyCode.A))
-                Filp(false); // キャラクターを右向きに反転
+            
         }
         else if (Input.GetKey(KeyCode.A))
         {
-            if (isGrounded) // 地面にいる場合
+            if (!isCharging)
             {
+                if (isGrounded) // 地面にいる場合
+                {
+                    if (m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+                        return;
+
+                    transform.transform.Translate(Vector2.right * m_MoveX * MoveSpeed * Time.deltaTime); // 左方向への移動
+                }
+                else
+                {
+                    transform.transform.Translate(new Vector3(m_MoveX * MoveSpeed * Time.deltaTime, 0, 0)); // 空中での移動
+                }
+
                 if (m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
                     return;
 
-                transform.transform.Translate(Vector2.right * m_MoveX * MoveSpeed * Time.deltaTime); // 左方向への移動
+                if (!Input.GetKey(KeyCode.D))
+                    Filp(true); // キャラクターを左向きに反転
             }
-            else
-            {
-                transform.transform.Translate(new Vector3(m_MoveX * MoveSpeed * Time.deltaTime, 0, 0)); // 空中での移動
-            }
-
-            if (m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
-                return;
-
-            if (!Input.GetKey(KeyCode.D))
-                Filp(true); // キャラクターを左向きに反転
+            
         }
 
         // スペースキーが押された時の処理（ジャンプ）

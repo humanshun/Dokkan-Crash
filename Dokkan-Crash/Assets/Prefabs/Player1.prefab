@@ -584,7 +584,6 @@ MonoBehaviour:
   currentJumpCount: 0
   isGrounded: 0
   OnceJumpRayCheck: 0
-  Is_DownJump_GroundCheck: 0
   m_rigidbody: {fileID: 0}
   MoveSpeed: 3
   JumpCount: 2
