@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerMovement : PlayerController
@@ -110,13 +110,6 @@ public class PlayerMovement : PlayerController
         // 座りや死亡アニメーション中は他のアニメーションを再生しない
         if (m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Sit") || m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Die"))
         {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                if (currentJumpCount < JumpCount)  // ジャンプ可能回数チェック
-                {
-                    DownJump(); // 下方向へのジャンプ
-                }
-            }
             return;
         }
 
@@ -211,7 +204,11 @@ public class PlayerMovement : PlayerController
                 }
                 else
                 {
-                    DownJump(); // 下方向へのジャンプ
+                    // プレイヤーが地面にいる場合のみRunアニメーションを再生
+                    if (isGrounded)
+                    {
+                        m_Anim.Play("Run"); // 走りアニメーション再生
+                    }
                 }
             }
         }

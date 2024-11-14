@@ -13,8 +13,6 @@ public abstract class PlayerController : MonoBehaviour
     public int currentJumpCount = 0; // 現在のジャンプ回数
     public bool isGrounded = false; // キャラクターが地面についているかどうか
     public bool OnceJumpRayCheck = false; // 一度ジャンプをした後に地面チェックを行うかどうか
-
-    public bool Is_DownJump_GroundCheck = false; // ダウンジャンプが可能かの判定フラグ
     protected float m_MoveX; // 横方向の移動入力
     public Rigidbody2D m_rigidbody; // キャラクターのRigidbody2Dコンポーネント
     protected CapsuleCollider2D m_CapsulleCollider; // キャラクターのコライダー
@@ -121,22 +119,6 @@ public abstract class PlayerController : MonoBehaviour
         OnceJumpRayCheck = true; // ジャンプ後の地面チェックを有効にする
         isGrounded = false; // キャラクターが地面から離れた状態にする
         currentJumpCount++; // ジャンプ回数を1回増加
-    }
-
-    // DownJumpは、下方向へのジャンプアクション（降下）を実行します
-    protected void DownJump()
-    {
-        if (!isGrounded) return; // 地面にいない場合は終了
-
-        if (!Is_DownJump_GroundCheck) // ダウンジャンプ可能な場合
-        {
-            m_Anim.Play("Jump"); // ジャンプアニメーションを再生
-            m_rigidbody.AddForce(-Vector2.up * 10); // 下方向に力を加える
-            isGrounded = false; // 地面から離れた状態にする
-
-            m_CapsulleCollider.enabled = false; // 一時的にコライダーを無効化
-            StartCoroutine(GroundCapsulleColliderTimmerFuc()); // コライダーの有効化を遅らせるコルーチンを開始
-        }
     }
 
     // GroundCapsulleColliderTimmerFucはコライダーを再度有効にするまでの待機時間を設定します
