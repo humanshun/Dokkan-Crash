@@ -31,5 +31,6 @@ public class FadeOut : MonoBehaviour
 
         // 完全にフェードアウト後、アルファを0に固定
         image.color = new Color(image.color.r, image.color.g, image.color.b, 0);
+        image.gameObject.SetActive(false);
     }
 }

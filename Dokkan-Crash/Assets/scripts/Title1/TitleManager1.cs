@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-public class TitleManager : MonoBehaviour
+public class TitleManager1 : MonoBehaviour
 {
     public string sceneName = "Title2";
     public int sceneChangeSecond;
