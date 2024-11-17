@@ -6,8 +6,8 @@ public class SettingsManager : MonoBehaviour
 {
     public static SettingsManager Instance;
 
-    public int playerCount;
-    public string selectedStage;
+    public List<string> playerNames = new List<string>(); // プレイヤー名のリスト
+    public int roundCount;
 
     private void Awake()
     {
