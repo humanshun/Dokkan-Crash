@@ -1495,6 +1495,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 919178514}
   m_CullTransparentMesh: 1
+--- !u!1 &1000505331
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1000505333}
+  - component: {fileID: 1000505332}
+  m_Layer: 0
+  m_Name: ButtonManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1000505332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000505331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 295d7579818eda347bf713588240b9e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nextSceneName: InGame
+  startButton: {fileID: 1085167929}
+--- !u!4 &1000505333
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000505331}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 379.873, y: 522.9044, z: -11.593209}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1059126421
 GameObject:
   m_ObjectHideFlags: 0
@@ -1531,8 +1577,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 88, y: 0}
-  m_SizeDelta: {x: 724.72, y: 149.3}
+  m_AnchoredPosition: {x: 82, y: 0}
+  m_SizeDelta: {x: 700, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1059126423
 MonoBehaviour:
@@ -2911,6 +2957,7 @@ MonoBehaviour:
   nameInputField: {fileID: 1059126423}
   addButton: {fileID: 1096629411}
   playerListText: {fileID: 1376987405}
+  maxPlayers: 4
 --- !u!1 &2041994717
 GameObject:
   m_ObjectHideFlags: 0
@@ -3174,6 +3221,7 @@ SceneRoots:
   - {fileID: 574907759}
   - {fileID: 1943788864}
   - {fileID: 1742641494}
+  - {fileID: 1000505333}
   - {fileID: 683492470}
   - {fileID: 29203096}
   - {fileID: 756941646}

@@ -3510,11 +3510,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0db0a5a7c3e01e54c9a88d1b267510c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerPrefab: {fileID: 1249173670229715205, guid: 12765dacf82c55b4ca8ca9b95568cc47, type: 3}
+  turnText: {fileID: 969770561}
+  textAnimator: {fileID: 969770563}
   players:
   - {fileID: 1123087920}
   - {fileID: 1297043999}
-  turnText: {fileID: 969770561}
-  textAnimator: {fileID: 969770563}
   isGameOver: 0
 --- !u!4 &1531006047
 Transform:

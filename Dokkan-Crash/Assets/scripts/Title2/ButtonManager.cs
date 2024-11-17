@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TitleManager2 : MonoBehaviour
+public class ButtonManager : MonoBehaviour
 {
     [SerializeField] private string nextSceneName;
     public Button startButton;

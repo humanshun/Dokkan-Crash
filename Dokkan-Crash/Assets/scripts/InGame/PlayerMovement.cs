@@ -4,6 +4,9 @@ using UnityEngine.UI;
 public class PlayerMovement : PlayerController
 {
     
+    // プレイヤー名を保持するフィールドを追加
+    public string playerName { get; set; }
+
     private bool isTurnActive = false;
     private GameManager gameManager;
 
@@ -44,6 +47,9 @@ public class PlayerMovement : PlayerController
         {
             chargeSlider.gameObject.SetActive(true); // ターン開始時にスライダーを表示
         }
+
+        // プレイヤー名を表示
+        Debug.Log($"It's {playerName}'s turn!");
     }
 
     public void EndTurn()
@@ -54,6 +60,12 @@ public class PlayerMovement : PlayerController
         {
             chargeSlider.gameObject.SetActive(false); // ターン終了時にスライダーを非表示
         }
+    }
+    protected override void OnDeath()
+    {
+        // キャラクターが死亡した場合、ゲームオーバーを確認
+        Debug.Log($"{playerName} has been eliminated!");
+        gameManager.CheckGameOver();
     }
     private void RotateFirePointToMouse()
     {
@@ -234,11 +246,6 @@ public class PlayerMovement : PlayerController
     {
         if (!m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Run") && !m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
             m_Anim.Play("Idle");
-    }
-    // キャラクター死亡時の処理
-    protected override void OnDeath()
-    {
-        gameManager.CheckGameOver();
     }
     private void OnCollisionEnter2D(Collision2D collision2D)
     {

@@ -4,10 +4,11 @@ using TMPro; // TextMeshProの名前空間を追加
 
 public class GameManager : MonoBehaviour
 {
-    public PlayerMovement[] players; 
+    public PlayerMovement playerPrefab; // プレイヤーのプレハブを参照
     public TextMeshProUGUI turnText; // TextをTextMeshProUGUIに変更
     public Animator textAnimator;
 
+    public PlayerMovement[] players;
     private int currentPlayerIndex = 0;
     public bool isGameOver = false;
 
@@ -18,9 +19,30 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        InitializePlayers();
         UpdateTurnUI();
         StartTurn();
     }
+
+    private void InitializePlayers()
+    {
+        int playerCount = SettingsManager.Instance.playerNames.Count;
+
+        players = new PlayerMovement[playerCount];
+
+        for (int i = 0; i < playerCount; i++)
+        {
+            // ランダムなスポーン位置を計算
+            float randomX = UnityEngine.Random.Range(-17f, 17f); // X軸の範囲をランダムに選択
+            Vector3 spawnPosition = new Vector3(randomX, 12f, 0f); // Y軸は固定値12
+
+            // プレイヤーを生成
+            PlayerMovement newPlayer = Instantiate(playerPrefab, spawnPosition, Quaternion.identity);
+            newPlayer.playerName = SettingsManager.Instance.playerNames[i]; // プレイヤー名を設定
+            players[i] = newPlayer;
+        }
+    }
+
 
     private void StartTurn()
     {
@@ -33,11 +55,11 @@ public class GameManager : MonoBehaviour
     public void EndTurn()
     {
         players[currentPlayerIndex].EndTurn();
-        
+
         currentPlayerIndex = (currentPlayerIndex + 1) % players.Length;
         UpdateTurnUI();
-        
-        Invoke("StartTurn", 1f); 
+
+        Invoke("StartTurn", 1f);
     }
 
     private void UpdateTurnUI()
@@ -75,5 +97,4 @@ public class GameManager : MonoBehaviour
             turnText.text = "Game Over - Draw!";
         }
     }
-
 }
