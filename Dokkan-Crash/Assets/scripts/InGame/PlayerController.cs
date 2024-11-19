@@ -29,6 +29,7 @@ public abstract class PlayerController : MonoBehaviour
     protected float minSpeed = 5f;        // 最小発射速度
     protected float maxSpeed = 20f;       // 最大発射速度
     protected bool isCharging = false;    // チャージ中かどうか
+    protected bool isIncreasing = true;   // チャージが増加中かどうかのフラグ
     public Slider chargeSlider;           // チャージ進行を表示するスライダー
 
     // === 設定用の変数 ===
@@ -210,8 +211,25 @@ public abstract class PlayerController : MonoBehaviour
     {
         if (isCharging)
         {
-            chargeTime += Time.deltaTime;
-            chargeTime = Mathf.Clamp(chargeTime, 0f, maxChargeTime);
+            if (isIncreasing)
+            {
+                chargeTime += Time.deltaTime;
+                if (chargeTime >= maxChargeTime)
+                {
+                    chargeTime = maxChargeTime;
+                    isIncreasing = false;
+                }
+            }
+            else
+            {
+                chargeTime -= Time.deltaTime;
+                if (chargeTime <= 0f)
+                {
+                    chargeTime = 0f;
+                    isIncreasing = true;
+                }
+            }
+
             UpdateChargeSlider();
         }
     }
