@@ -167,17 +167,6 @@ Grid:
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 0
   m_CellSwizzle: 0
---- !u!114 &461417149 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5930667269497088767, guid: 12765dacf82c55b4ca8ca9b95568cc47, type: 3}
-  m_PrefabInstance: {fileID: 3026450915386432447}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &608229630
 GameObject:
   m_ObjectHideFlags: 0
@@ -921,6 +910,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e0f929248d997d24fa80adaa46f30d2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1245053431 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3541740681888926905, guid: 12765dacf82c55b4ca8ca9b95568cc47, type: 3}
+  m_PrefabInstance: {fileID: 3026450915386432447}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &1297043999 stripped
@@ -3750,9 +3750,9 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1249173670229715205, guid: 12765dacf82c55b4ca8ca9b95568cc47, type: 3}
-      propertyPath: playerNameText
+      propertyPath: moveSlider
       value: 
-      objectReference: {fileID: 461417149}
+      objectReference: {fileID: 1245053431}
     - target: {fileID: 2094703744647532536, guid: 12765dacf82c55b4ca8ca9b95568cc47, type: 3}
       propertyPath: m_AnchorMax.x
       value: 1
@@ -3809,11 +3809,15 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4616238857546328791, guid: 12765dacf82c55b4ca8ca9b95568cc47, type: 3}
-      propertyPath: m_AdditionalShaderChannelsFlag
-      value: 25
+    - target: {fileID: 5310034207900701973, guid: 12765dacf82c55b4ca8ca9b95568cc47, type: 3}
+      propertyPath: m_Name
+      value: HPSlider
       objectReference: {fileID: 0}
     - target: {fileID: 7536507083185887137, guid: 12765dacf82c55b4ca8ca9b95568cc47, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7554276490717721099, guid: 12765dacf82c55b4ca8ca9b95568cc47, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
       objectReference: {fileID: 0}

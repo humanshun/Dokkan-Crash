@@ -13,6 +13,19 @@ public class PlayerMovement : PlayerController
     private bool isTurnActive = false;
     private GameManager gameManager;
 
+    //-----------------------------------
+    //移動制限
+    private float maxMoveTime = 3f; // 横移動できる最大の合計時間（秒）
+    private float totalMoveTime = 0f; // 横移動の累積時間
+    private bool canMoveHorizontally = true; // 横移動可能フラグ
+
+    private float sliderMaxMoveTime = 0f;
+    private float sliderTotalMoveTime = 3f;
+    
+    public Slider moveSlider;
+
+    //-----------------------------------
+
     private void Awake()
     {
         chargeSlider.gameObject.SetActive(false);
@@ -34,6 +47,12 @@ public class PlayerMovement : PlayerController
             chargeSlider.value = 0f; // スライダーの初期値を設定
         }
 
+        if (moveSlider != null)
+        {
+            moveSlider.maxValue = maxMoveTime;
+            moveSlider.value = 0;
+        }
+
         // プレイヤー名を表示する
         if (playerNameText != null)
         {
@@ -44,6 +63,7 @@ public class PlayerMovement : PlayerController
 
     private void Update()
     {
+        moveSlider.value = sliderTotalMoveTime;
         if (isTurnActive && IsAlive)
         {
             CheckInput();
@@ -54,6 +74,15 @@ public class PlayerMovement : PlayerController
     public void StartTurn()
     {
         isTurnActive = true;
+        canMoveHorizontally = true;
+
+        //スライダーリセット
+        moveSlider.value = sliderMaxMoveTime;
+
+        //値リセット
+        sliderTotalMoveTime = 3f;
+        totalMoveTime = 0f;
+
         canMove = true; // ターン開始時に動けるようにする
         if (chargeSlider != null)
         {
@@ -185,16 +214,11 @@ public class PlayerMovement : PlayerController
         {
             if (!isCharging)
             {
-                if (isGrounded) // 地面にいる場合
+                totalMoveTime += Time.deltaTime; // 移動時間を加算
+                sliderTotalMoveTime -= Time.deltaTime;
+                if (totalMoveTime <= maxMoveTime && canMoveHorizontally)
                 {
-                    if (m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
-                        return;
-
-                    transform.transform.Translate(Vector2.right * m_MoveX * MoveSpeed * Time.deltaTime); // 右方向への移動
-                }
-                else
-                {
-                    transform.transform.Translate(new Vector3(m_MoveX * MoveSpeed * Time.deltaTime, 0, 0)); // 空中での移動
+                    transform.transform.Translate(Vector2.right * m_MoveX * MoveSpeed * Time.deltaTime);
                 }
 
                 if (m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
@@ -209,16 +233,11 @@ public class PlayerMovement : PlayerController
         {
             if (!isCharging)
             {
-                if (isGrounded) // 地面にいる場合
+                totalMoveTime += Time.deltaTime; // 移動時間を加算
+                sliderTotalMoveTime -= Time.deltaTime;
+                if (totalMoveTime <= maxMoveTime && canMoveHorizontally)
                 {
-                    if (m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
-                        return;
-
-                    transform.transform.Translate(Vector2.right * m_MoveX * MoveSpeed * Time.deltaTime); // 左方向への移動
-                }
-                else
-                {
-                    transform.transform.Translate(new Vector3(m_MoveX * MoveSpeed * Time.deltaTime, 0, 0)); // 空中での移動
+                    transform.transform.Translate(Vector2.right * m_MoveX * MoveSpeed * Time.deltaTime);
                 }
 
                 if (m_Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
