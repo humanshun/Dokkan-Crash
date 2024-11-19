@@ -1,14 +1,22 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class PlayerMovement : PlayerController
 {
     
     // プレイヤー名を保持するフィールドを追加
     public string playerName { get; set; }
+    // 名前表示用のTextMeshProオブジェクト
+    public TextMeshProUGUI playerNameText;
 
     private bool isTurnActive = false;
     private GameManager gameManager;
+
+    private void Awake()
+    {
+        chargeSlider.gameObject.SetActive(false);
+    }
 
     protected override void Start()
     {
@@ -26,7 +34,11 @@ public class PlayerMovement : PlayerController
             chargeSlider.value = 0f; // スライダーの初期値を設定
         }
 
-        chargeSlider.gameObject.SetActive(false);
+        // プレイヤー名を表示する
+        if (playerNameText != null)
+        {
+            playerNameText.text = playerName; // 名前を設定
+        }
     }
 
 

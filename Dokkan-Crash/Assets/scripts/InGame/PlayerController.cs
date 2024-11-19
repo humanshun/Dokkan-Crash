@@ -124,6 +124,21 @@ public abstract class PlayerController : MonoBehaviour
     {
         // ローカルスケールのX軸を反転して左右を変更
         transform.localScale = new Vector3(bLeft ? 1 : -1, 1, 1);
+
+        // HPバーの反転処理
+        if (healthSlider != null)
+        {
+            // HPバーの親オブジェクトのローカルスケールを取得
+            Transform sliderTransform = healthSlider.transform.parent;
+
+            if (sliderTransform != null)
+            {
+                // HPバーのX軸スケールをプレイヤーのローカルスケールに合わせる
+                Vector3 sliderScale = sliderTransform.localScale;
+                sliderScale.x = Mathf.Abs(sliderScale.x) * (bLeft ? 1 : -1); // プレイヤーの向きに合わせて反転
+                sliderTransform.localScale = sliderScale;
+            }
+        }
     }
 
     // prefromJumpは、ジャンプアクションを実行します

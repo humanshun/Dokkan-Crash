@@ -38,10 +38,21 @@ public class GameManager : MonoBehaviour
 
             // プレイヤーを生成
             PlayerMovement newPlayer = Instantiate(playerPrefab, spawnPosition, Quaternion.identity);
-            newPlayer.playerName = SettingsManager.Instance.playerNames[i]; // プレイヤー名を設定
+
+            // プレイヤー名を設定
+            string playerName = SettingsManager.Instance.playerNames[i];
+            newPlayer.playerName = playerName;
+
+            // 名前のUIを設定
+            if (newPlayer.playerNameText != null)
+            {
+                newPlayer.playerNameText.text = playerName; // 頭上の名前を表示
+            }
+
             players[i] = newPlayer;
         }
     }
+
 
 
     private void StartTurn()
@@ -49,6 +60,7 @@ public class GameManager : MonoBehaviour
         if (!isGameOver)
         {
             players[currentPlayerIndex].StartTurn();
+            players[currentPlayerIndex].chargeSlider.gameObject.SetActive(true);
         }
     }
 
@@ -80,7 +92,11 @@ public class GameManager : MonoBehaviour
 
     private void UpdateTurnUI()
     {
-        turnText.text = "Player " + (currentPlayerIndex + 1) + "'s Turn";
+        // 現在のプレイヤー名を取得
+        string currentPlayerName = players[currentPlayerIndex].playerName;
+
+        // UIにプレイヤー名を表示
+        turnText.text = $"{currentPlayerName}'s Turn";
         textAnimator.Play("TurnText");
     }
 
@@ -88,16 +104,15 @@ public class GameManager : MonoBehaviour
     {
         // 生存しているプレイヤーを確認
         int alivePlayers = 0;
-        // 勝利したプレイヤーを探す
         PlayerMovement winningPlayer = null;
+
         foreach (var player in players)
         {
-            if (player.IsAlive) // プレイヤーが生存している場合に勝者として設定
+            if (player.IsAlive)
             {
                 alivePlayers++;
-                winningPlayer = player;
+                winningPlayer = player; // 生存プレイヤーを勝者として仮定
             }
-            
         }
 
         // 生存プレイヤーが1人以下の場合にゲーム終了
@@ -108,8 +123,8 @@ public class GameManager : MonoBehaviour
 
             if (winningPlayer != null)
             {
-                // 勝者がいる場合
-                turnText.text = "Player " + (Array.IndexOf(players, winningPlayer) + 1) + " Wins!";
+                // 勝者がいる場合はその名前を表示
+                turnText.text = $"{winningPlayer.playerName} Wins!";
             }
             else
             {
@@ -118,4 +133,5 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
 }
