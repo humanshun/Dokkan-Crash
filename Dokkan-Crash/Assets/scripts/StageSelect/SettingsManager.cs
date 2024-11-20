@@ -6,7 +6,7 @@ public class SettingsManager : MonoBehaviour
 {
     public static SettingsManager Instance;
 
-    public List<string> playerNames = new List<string>(); // プレイヤー名のリスト
+    public List<PlayerData> playerDataList = new List<PlayerData>(); // プレイヤー名のリスト
     public int roundCount;
 
     private void Awake()

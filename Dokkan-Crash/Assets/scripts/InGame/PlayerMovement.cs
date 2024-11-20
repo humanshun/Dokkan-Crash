@@ -4,30 +4,32 @@ using TMPro;
 
 public class PlayerMovement : PlayerController
 {
-    
-    // プレイヤー名を保持するフィールドを追加
-    public string playerName { get; set; }
-    // 名前表示用のTextMeshProオブジェクト
-    public TextMeshProUGUI playerNameText;
-
-    private bool isTurnActive = false;
+    public string playerName { get; set; } // プレイヤー名を保持するフィールド
+    public TextMeshProUGUI playerNameText; // プレイヤー名前表示テキスト
+    private bool isTurnActive = false;     // 今自分のターンかどうか
     private GameManager gameManager;
 
     //-----------------------------------
     //移動制限
-    private float maxMoveTime = 3f; // 横移動できる最大の合計時間（秒）
-    private float totalMoveTime = 0f; // 横移動の累積時間
+    private float maxMoveTime = 3f;          // 横移動できる最大の合計時間（秒）
+    private float totalMoveTime = 0f;        // 横移動の累積時間
     private bool canMoveHorizontally = true; // 横移動可能フラグ
-
-    private float sliderMaxMoveTime = 0f;
-    private float sliderTotalMoveTime = 3f;
-    
+    private float sliderMaxMoveTime = 0f;    // スライダーの合計時間（秒）
+    private float sliderTotalMoveTime = 3f;  // スライダーの累積時間
     public Slider moveSlider;
 
     //-----------------------------------
 
     private void Awake()
     {
+        m_rigidbody = GetComponent<Rigidbody2D>();
+
+        if (m_rigidbody == null)
+        {
+            Debug.LogError("Rigidbody2D がアタッチされていません。");
+        }
+
+        // 最初全員のチャージスライドを非表示にしておく
         chargeSlider.gameObject.SetActive(false);
     }
 
@@ -37,16 +39,16 @@ public class PlayerMovement : PlayerController
         m_CapsulleCollider = GetComponent<CapsuleCollider2D>();
         m_Anim = transform.Find("model").GetComponent<Animator>();
         m_rigidbody = GetComponent<Rigidbody2D>();
-
-        // GameManagerのインスタンスを取得
         gameManager = FindObjectOfType<GameManager>();
 
+        // チャージスライダー初期化
         if (chargeSlider != null)
         {
-            chargeSlider.maxValue = maxChargeTime; // スライダーの最大値を設定
-            chargeSlider.value = 0f; // スライダーの初期値を設定
+            chargeSlider.maxValue = maxChargeTime;
+            chargeSlider.value = 0f;
         }
 
+        // ムーブスライダー初期化
         if (moveSlider != null)
         {
             moveSlider.maxValue = maxMoveTime;
@@ -64,10 +66,12 @@ public class PlayerMovement : PlayerController
     private void Update()
     {
         moveSlider.value = sliderTotalMoveTime;
+
+        // 自分のターンで、自分が生きてたら
         if (isTurnActive && IsAlive)
         {
-            CheckInput();
-            RotateFirePointToMouse(); // マウスの方向にFirePointを向ける
+            CheckInput();             // 入力メソッド
+            RotateFirePointToMouse(); // マウスの方向にFirePointを向けるメソッド
         }
     }
 
@@ -79,18 +83,24 @@ public class PlayerMovement : PlayerController
         //スライダーリセット
         moveSlider.value = sliderMaxMoveTime;
 
-        //値リセット
+        //スライダー値リセット
         sliderTotalMoveTime = 3f;
         totalMoveTime = 0f;
 
-        canMove = true; // ターン開始時に動けるようにする
+        // ターン開始時に動けるようにする
+        canMove = true; 
+
         if (chargeSlider != null)
         {
-            chargeSlider.gameObject.SetActive(true); // ターン開始時にスライダーを表示
+            chargeSlider.gameObject.SetActive(true); // 自分のターン開始時にスライダーを表示
         }
 
         // プレイヤー名を表示
         Debug.Log($"It's {playerName}'s turn!");
+
+        // プレイヤーを押して落としてしまうので自分のターン以外はX軸だけ固定
+        m_rigidbody.constraints = RigidbodyConstraints2D.None;
+        m_rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
 
     public void EndTurn()
@@ -101,12 +111,22 @@ public class PlayerMovement : PlayerController
         {
             chargeSlider.gameObject.SetActive(false); // ターン終了時にスライダーを非表示
         }
+
+        // プレイヤーを押して落としてしまうので自分のターン以外はX軸だけ固定
+        m_rigidbody.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
     }
     protected override void OnDeath()
     {
+        if (!IsAlive)
+            return;
         // キャラクターが死亡した場合、ゲームオーバーを確認
         Debug.Log($"{playerName} has been eliminated!");
-        gameManager.CheckGameOver();
+        gameManager.EndTurn();
+        // 自身をGameManagerに通知
+        if (gameManager != null)
+        {
+            gameManager.CheckGameOver();
+        }
     }
     private void RotateFirePointToMouse()
     {
@@ -284,7 +304,7 @@ public class PlayerMovement : PlayerController
         {
             chargeSlider.gameObject.SetActive(false);
             TakeDamage(1000f);
-            OnDeath();
+            gameManager.EndTurn();
         }
     }
 }

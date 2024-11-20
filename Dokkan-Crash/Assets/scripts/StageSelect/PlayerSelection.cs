@@ -20,7 +20,7 @@ public class PlayerSelection : MonoBehaviour
     public void AddPlayer()
     {
         // プレイヤーの最大人数に達しているか確認
-        if (SettingsManager.Instance.playerNames.Count >= maxPlayers)
+        if (SettingsManager.Instance.playerDataList.Count >= maxPlayers)
         {
             Debug.LogWarning($"The maximum number of players ({maxPlayers}) has been reached!");
             return;
@@ -35,8 +35,18 @@ public class PlayerSelection : MonoBehaviour
             return;
         }
 
+        // 重複する名前が存在しないかチェック
+        foreach (var player in SettingsManager.Instance.playerDataList)
+        {
+            if (player.playerName == playerName)
+            {
+                Debug.LogWarning($"Player '{playerName}' is already in the list!");
+                return;
+            }
+        }
+
         // プレイヤー名をリストに追加
-        SettingsManager.Instance.playerNames.Add(playerName);
+        SettingsManager.Instance.playerDataList.Add(new PlayerData(playerName));
         Debug.Log($"Player '{playerName}' has been added.");
 
         // プレイヤーリストを更新して表示
@@ -50,13 +60,13 @@ public class PlayerSelection : MonoBehaviour
     {
         // プレイヤーリストをテキスト形式に変換して表示
         playerListText.text = "Player List:\n";
-        foreach (string name in SettingsManager.Instance.playerNames)
+        foreach (var player in SettingsManager.Instance.playerDataList)
         {
-            playerListText.text += $"- {name}\n";
+            playerListText.text += $"- {player.playerName} (Wins: {player.winCount})\n";
         }
 
         // 残りスロット数を表示
-        int remainingSlots = maxPlayers - SettingsManager.Instance.playerNames.Count;
+        int remainingSlots = maxPlayers - SettingsManager.Instance.playerDataList.Count;
         playerListText.text += $"\nRemaining Slots: {remainingSlots}";
     }
 }

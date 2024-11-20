@@ -34,9 +34,8 @@ public class Projectile : MonoBehaviour
                 Instantiate(explosion, transform.position, Quaternion.identity);
             }
         }
-        else if (collision.gameObject.CompareTag("Wall"))
+        else if (collision.gameObject.CompareTag("Wall") || collision.gameObject.CompareTag("Die"))
         {
-            Destroy(collision.gameObject);
             Destroy(gameObject); // 弾を消す
             Instantiate(explosion, transform.position, Quaternion.identity);
         }

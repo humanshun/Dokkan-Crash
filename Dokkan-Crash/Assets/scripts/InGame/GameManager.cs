@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
 
     private void InitializePlayers()
     {
-        int playerCount = SettingsManager.Instance.playerNames.Count;
+        int playerCount = SettingsManager.Instance.playerDataList.Count;
 
         players = new PlayerMovement[playerCount];
 
@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
             PlayerMovement newPlayer = Instantiate(playerPrefab, spawnPosition, Quaternion.identity);
 
             // プレイヤー名を設定
-            string playerName = SettingsManager.Instance.playerNames[i];
+            string playerName = SettingsManager.Instance.playerDataList[i].playerName;
             newPlayer.playerName = playerName;
 
             // 名前のUIを設定
@@ -60,7 +60,10 @@ public class GameManager : MonoBehaviour
         if (!isGameOver)
         {
             players[currentPlayerIndex].StartTurn();
-            players[currentPlayerIndex].chargeSlider.gameObject.SetActive(true);
+            if (players[currentPlayerIndex].chargeSlider != null)
+            {
+                players[currentPlayerIndex].chargeSlider.gameObject.SetActive(true);
+            }
         }
     }
 
@@ -106,17 +109,17 @@ public class GameManager : MonoBehaviour
         int alivePlayers = 0;
         PlayerMovement winningPlayer = null;
 
-        foreach (var player in players)
+        foreach (var p in players)
         {
-            if (player.IsAlive)
+            if (p.IsAlive)
             {
                 alivePlayers++;
-                winningPlayer = player; // 生存プレイヤーを勝者として仮定
+                winningPlayer = p; // 生存プレイヤーを勝者として仮定
             }
         }
 
         // 生存プレイヤーが1人以下の場合にゲーム終了
-        if (alivePlayers <= 1)
+        if (alivePlayers <= 1 && !isGameOver)
         {
             isGameOver = true; // ゲームオーバーフラグを設定
             textAnimator.Play("TextGameOver"); // ゲームオーバーアニメーションを再生
@@ -125,11 +128,36 @@ public class GameManager : MonoBehaviour
             {
                 // 勝者がいる場合はその名前を表示
                 turnText.text = $"{winningPlayer.playerName} Wins!";
+
+                // 勝者の勝利カウントを増やす
+                var playerData = SettingsManager.Instance.playerDataList.Find(p => p.playerName == winningPlayer.playerName);
+                if (playerData != null)
+                {
+                    playerData.winCount++;
+                    // デバッグログを追加
+                    Debug.Log($"Player '{playerData.playerName}' won! Total wins: {playerData.winCount}");
+                }
             }
             else
             {
                 // 勝者がいない場合（全員敗北）
                 turnText.text = "Game Over - Draw!";
+            }
+
+            // ラウンドカウントをデクリメント
+            SettingsManager.Instance.roundCount--;
+
+            // 残りラウンドがある場合
+            if (SettingsManager.Instance.roundCount > 0)
+            {
+                FadeManager.Instance.FadeToScene("InGame"); // 次のラウンドに移行
+            }
+            else
+            {
+                // ラウンドが終了した場合
+                Debug.Log("All rounds completed.");
+                // 必要に応じてタイトル画面やリザルト画面に遷移
+                FadeManager.Instance.FadeToScene("result");
             }
         }
     }

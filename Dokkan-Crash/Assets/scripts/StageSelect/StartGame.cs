@@ -13,7 +13,7 @@ public class StartGame : MonoBehaviour
         }
 
         // プレイヤー人数とラウンド数を取得
-        int playerCount = SettingsManager.Instance.playerNames.Count; // プレイヤー名リストを基準
+        int playerCount = SettingsManager.Instance.playerDataList.Count; // プレイヤー名リストを基準
         int roundCount = SettingsManager.Instance.roundCount;
 
         // 条件判定
