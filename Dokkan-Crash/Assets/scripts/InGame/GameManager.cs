@@ -1,13 +1,16 @@
 using UnityEngine;
 using System;
-using TMPro; // TextMeshProの名前空間を追加
+using TMPro;
+using System.Collections; // TextMeshProの名前空間を追加
 
 public class GameManager : MonoBehaviour
 {
-    public PlayerMovement playerPrefab; // プレイヤーのプレハブを参照
-    public TextMeshProUGUI turnText; // TextをTextMeshProUGUIに変更
-    public Animator textAnimator;
-
+    public PlayerMovement playerPrefab;
+    public TextMeshProUGUI turnText;
+    public TextMeshProUGUI roundText;
+    public static int roundNumber = 1;
+    public Animator turnTextAnimator;
+    public Animator roundTextAnimator;
     public PlayerMovement[] players;
     private int currentPlayerIndex = 0;
     public bool isGameOver = false;
@@ -20,8 +23,15 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         InitializePlayers();
-        UpdateTurnUI();
         StartTurn();
+        StartCoroutine(RoundText());
+    }
+    IEnumerator RoundText()
+    {
+        roundText.text = $"{roundNumber} Round";
+        roundTextAnimator.Play("Round");
+        yield return new WaitForSeconds(2);
+        UpdateTurnUI();
     }
 
     private void InitializePlayers()
@@ -100,7 +110,7 @@ public class GameManager : MonoBehaviour
 
         // UIにプレイヤー名を表示
         turnText.text = $"{currentPlayerName}'s Turn";
-        textAnimator.Play("TurnText");
+        turnTextAnimator.Play("TurnText");
     }
 
     public void CheckGameOver()
@@ -122,7 +132,7 @@ public class GameManager : MonoBehaviour
         if (alivePlayers <= 1 && !isGameOver)
         {
             isGameOver = true; // ゲームオーバーフラグを設定
-            textAnimator.Play("TextGameOver"); // ゲームオーバーアニメーションを再生
+            turnTextAnimator.Play("TextGameOver"); // ゲームオーバーアニメーションを再生
 
             if (winningPlayer != null)
             {
@@ -146,6 +156,7 @@ public class GameManager : MonoBehaviour
 
             // ラウンドカウントをデクリメント
             SettingsManager.Instance.roundCount--;
+            roundNumber++;
 
             // 残りラウンドがある場合
             if (SettingsManager.Instance.roundCount > 0)
