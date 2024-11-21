@@ -78,6 +78,9 @@ public class ResultGameManager : MonoBehaviour
     }
     private void BackToStageSelect()
     {
+        // 設定をリセット
+        SettingsManager.Instance.ResetSettings();
+
         FadeManager.Instance.FadeToScene("StageSelect");
     }
 }

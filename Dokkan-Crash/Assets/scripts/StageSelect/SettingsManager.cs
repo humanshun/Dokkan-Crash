@@ -21,4 +21,10 @@ public class SettingsManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    public void ResetSettings() // リセット用のメソッド
+    {
+        playerDataList.Clear(); // プレイヤーデータをクリア
+        roundCount = 0;         // ラウンドカウントをリセット
+    }
 }

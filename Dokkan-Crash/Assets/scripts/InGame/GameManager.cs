@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
     public PlayerMovement playerPrefab;
     public TextMeshProUGUI turnText;
     public TextMeshProUGUI roundText;
-    public static int roundNumber = 1;
+    public int roundNumber = 1;
     public Animator turnTextAnimator;
     public Animator roundTextAnimator;
     public PlayerMovement[] players;
@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        roundNumber = 1;
         InitializePlayers();
         StartTurn();
         StartCoroutine(RoundText());
