@@ -1,20 +1,34 @@
 using UnityEngine;
 using System;
-using TMPro;
-using System.Collections; // TextMeshProの名前空間を追加
+using TMPro; // TextMeshProの名前空間を追加
+using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
+    // プレイヤープレハブを参照
     public PlayerMovement playerPrefab;
+    
+    // ターンおよびラウンドのUIテキスト
     public TextMeshProUGUI turnText;
     public TextMeshProUGUI roundText;
-    public int roundNumber = 1;
+
+    // 現在のラウンド番号（共有用静的変数）
+    public static int roundNumber = 1;
+
+    // アニメーション用のAnimator
     public Animator turnTextAnimator;
     public Animator roundTextAnimator;
+
+    // ゲーム内のプレイヤーリスト
     public PlayerMovement[] players;
+
+    // 現在のプレイヤーのインデックス
     private int currentPlayerIndex = 0;
+
+    // ゲームが終了したかどうかのフラグ
     public bool isGameOver = false;
 
+    // 現在のプレイヤーインデックスを外部から参照可能
     public int CurrentPlayerIndex
     {
         get { return currentPlayerIndex; }
@@ -22,30 +36,32 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        roundNumber = 1;
-        InitializePlayers();
-        StartTurn();
-        StartCoroutine(RoundText());
+        InitializePlayers(); // プレイヤーを初期化
+        ShufflePlayers(); // プレイヤー順をシャッフル
+        StartTurn(); // 最初のターンを開始
+        StartCoroutine(RoundText()); // ラウンドテキストの表示
     }
+
+    // ラウンド開始時のテキストを表示
     IEnumerator RoundText()
     {
-        roundText.text = $"{roundNumber} Round";
-        roundTextAnimator.Play("Round");
-        yield return new WaitForSeconds(2);
-        UpdateTurnUI();
+        roundText.text = $"{roundNumber} Round"; // ラウンド番号を設定
+        roundTextAnimator.Play("Round"); // アニメーション再生
+        yield return new WaitForSeconds(2); // 2秒待機
+        UpdateTurnUI(); // ターンUIを更新
     }
 
+    // プレイヤーを初期化する
     private void InitializePlayers()
     {
-        int playerCount = SettingsManager.Instance.playerDataList.Count;
-
-        players = new PlayerMovement[playerCount];
+        int playerCount = SettingsManager.Instance.playerDataList.Count; // プレイヤーデータの数を取得
+        players = new PlayerMovement[playerCount]; // プレイヤーリストを作成
 
         for (int i = 0; i < playerCount; i++)
         {
-            // ランダムなスポーン位置を計算
-            float randomX = UnityEngine.Random.Range(-17f, 17f); // X軸の範囲をランダムに選択
-            Vector3 spawnPosition = new Vector3(randomX, 12f, 0f); // Y軸は固定値12
+            // ランダムな位置にスポーン
+            float randomX = UnityEngine.Random.Range(-17f, 17f); 
+            Vector3 spawnPosition = new Vector3(randomX, 12f, 0f);
 
             // プレイヤーを生成
             PlayerMovement newPlayer = Instantiate(playerPrefab, spawnPosition, Quaternion.identity);
@@ -54,70 +70,81 @@ public class GameManager : MonoBehaviour
             string playerName = SettingsManager.Instance.playerDataList[i].playerName;
             newPlayer.playerName = playerName;
 
-            // 名前のUIを設定
+            // プレイヤー名をUIに表示
             if (newPlayer.playerNameText != null)
             {
-                newPlayer.playerNameText.text = playerName; // 頭上の名前を表示
+                newPlayer.playerNameText.text = playerName;
             }
 
-            players[i] = newPlayer;
+            players[i] = newPlayer; // プレイヤーをリストに追加
         }
     }
 
+    // プレイヤーリストをシャッフル
+    private void ShufflePlayers()
+    {
+        for (int i = 0; i < players.Length; i++)
+        {
+            int randomIndex = UnityEngine.Random.Range(0, players.Length); // ランダムなインデックスを取得
+            var temp = players[i];
+            players[i] = players[randomIndex];
+            players[randomIndex] = temp;
+        }
 
+        // シャッフル結果をデバッグログに出力
+        Debug.Log("Player Order:");
+        foreach (var player in players)
+        {
+            Debug.Log(player.playerName);
+        }
+    }
 
+    // ターンを開始する
     private void StartTurn()
     {
         if (!isGameOver)
         {
-            players[currentPlayerIndex].StartTurn();
+            players[currentPlayerIndex].StartTurn(); // 現在のプレイヤーのターン開始
             if (players[currentPlayerIndex].chargeSlider != null)
             {
-                players[currentPlayerIndex].chargeSlider.gameObject.SetActive(true);
+                players[currentPlayerIndex].chargeSlider.gameObject.SetActive(true); // スライダーを表示
             }
         }
     }
 
+    // ターンを終了する
     public void EndTurn()
     {
-        // 現在のプレイヤーのターンを終了
-        players[currentPlayerIndex].EndTurn();
+        players[currentPlayerIndex].EndTurn(); // 現在のプレイヤーのターンを終了
 
-        // 次のプレイヤーにターンを回す
+        // 次のプレイヤーを選択（生存しているプレイヤーにスキップ）
         do
         {
             currentPlayerIndex = (currentPlayerIndex + 1) % players.Length;
         }
-        while (!players[currentPlayerIndex].IsAlive); // 生存しているプレイヤーが見つかるまでループ
+        while (!players[currentPlayerIndex].IsAlive);
 
-        // ターンUIを更新
-        UpdateTurnUI();
+        UpdateTurnUI(); // ターンUIを更新
+        CheckGameOver(); // ゲーム終了条件を確認
 
-        // ゲームオーバーを確認
-        CheckGameOver();
-
-        // ゲームが終了していない場合に次のターンを開始
         if (!isGameOver)
         {
-            Invoke("StartTurn", 1f);
+            Invoke("StartTurn", 1f); // 1秒後に次のターンを開始
         }
     }
 
-
+    // ターンUIを更新
     private void UpdateTurnUI()
     {
-        // 現在のプレイヤー名を取得
-        string currentPlayerName = players[currentPlayerIndex].playerName;
-
-        // UIにプレイヤー名を表示
-        turnText.text = $"{currentPlayerName}'s Turn";
-        turnTextAnimator.Play("TurnText");
+        string currentPlayerName = players[currentPlayerIndex].playerName; // 現在のプレイヤー名を取得
+        turnText.text = $"{currentPlayerName}'s Turn"; // UIに反映
+        turnTextAnimator.Play("TurnText"); // アニメーション再生
     }
 
+    // ゲーム終了条件を確認
     public void CheckGameOver()
     {
-        // 生存しているプレイヤーを確認
-        int alivePlayers = 0;
+        int alivePlayers = 0; // 生存プレイヤーの数
         PlayerMovement winningPlayer = null;
 
         foreach (var p in players)
@@ -125,53 +152,42 @@ public class GameManager : MonoBehaviour
             if (p.IsAlive)
             {
                 alivePlayers++;
-                winningPlayer = p; // 生存プレイヤーを勝者として仮定
+                winningPlayer = p; // 勝者候補
             }
         }
 
-        // 生存プレイヤーが1人以下の場合にゲーム終了
         if (alivePlayers <= 1 && !isGameOver)
         {
-            isGameOver = true; // ゲームオーバーフラグを設定
-            turnTextAnimator.Play("TextGameOver"); // ゲームオーバーアニメーションを再生
+            isGameOver = true; // ゲーム終了フラグを立てる
+            turnTextAnimator.Play("TextGameOver"); // ゲームオーバーアニメーション
 
             if (winningPlayer != null)
             {
-                // 勝者がいる場合はその名前を表示
-                turnText.text = $"{winningPlayer.playerName} Wins!";
-
-                // 勝者の勝利カウントを増やす
+                turnText.text = $"{winningPlayer.playerName} Wins!"; // 勝者名を表示
                 var playerData = SettingsManager.Instance.playerDataList.Find(p => p.playerName == winningPlayer.playerName);
                 if (playerData != null)
                 {
-                    playerData.winCount++;
-                    // デバッグログを追加
+                    playerData.winCount++; // 勝利数をカウント
                     Debug.Log($"Player '{playerData.playerName}' won! Total wins: {playerData.winCount}");
                 }
             }
             else
             {
-                // 勝者がいない場合（全員敗北）
-                turnText.text = "Game Over - Draw!";
+                turnText.text = "Game Over - Draw!"; // 引き分けメッセージ
             }
 
-            // ラウンドカウントをデクリメント
+            // 残りラウンドを確認
             SettingsManager.Instance.roundCount--;
             roundNumber++;
 
-            // 残りラウンドがある場合
             if (SettingsManager.Instance.roundCount > 0)
             {
-                FadeManager.Instance.FadeToScene("InGame"); // 次のラウンドに移行
+                FadeManager.Instance.FadeToScene("InGame"); // 次ラウンドへ
             }
             else
             {
-                // ラウンドが終了した場合
-                Debug.Log("All rounds completed.");
-                // 必要に応じてタイトル画面やリザルト画面に遷移
-                FadeManager.Instance.FadeToScene("result");
+                FadeManager.Instance.FadeToScene("result"); // 全ラウンド終了
             }
         }
     }
-
 }

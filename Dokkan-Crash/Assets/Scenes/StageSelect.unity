@@ -1506,7 +1506,7 @@ GameObject:
   - component: {fileID: 1000505333}
   - component: {fileID: 1000505332}
   m_Layer: 0
-  m_Name: ButtonManager
+  m_Name: StartCheckButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1526,6 +1526,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nextSceneName: InGame
   startButton: {fileID: 1085167929}
+  addButton: {fileID: 1096629411}
+  roundCountButtons:
+  - {fileID: 704897122}
+  - {fileID: 2041994719}
+  - {fileID: 1778871900}
+  - {fileID: 919178516}
 --- !u!4 &1000505333
 Transform:
   m_ObjectHideFlags: 0
@@ -2574,7 +2580,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b9ae146a3b7bce4b9c60343702a8602, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerNames: []
+  playerDataList: []
   roundCount: 0
 --- !u!1 &1778871898
 GameObject:

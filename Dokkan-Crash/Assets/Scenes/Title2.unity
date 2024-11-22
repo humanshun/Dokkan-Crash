@@ -910,7 +910,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1771561420}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 295d7579818eda347bf713588240b9e1, type: 3}
+  m_Script: {fileID: 11500000, guid: fba486025250d294bab70d07bfa7412d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   nextSceneName: StageSelect

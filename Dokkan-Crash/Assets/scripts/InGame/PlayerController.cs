@@ -258,7 +258,7 @@ public abstract class PlayerController : MonoBehaviour
         GameObject projectile = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
 
         // Projectileコンポーネントを取得して、発射方向と速度を設定
-        Projectile proj = projectile.GetComponent<Projectile>();
+        Bomb proj = projectile.GetComponent<Bomb>();
 
         // firePointの向いている方向を基準に発射方向を決定
         Vector2 shootDirection = firePoint.right;

@@ -78,6 +78,7 @@ public class ResultGameManager : MonoBehaviour
     }
     private void BackToStageSelect()
     {
+        GameManager.roundNumber = 1;
         // 設定をリセット
         SettingsManager.Instance.ResetSettings();
 
