@@ -9,19 +9,21 @@ using UnityEngine.UI;
 public abstract class PlayerController : MonoBehaviour
 {
     // === パブリック変数 ===
-    public bool IsSit = false; // キャラクターが座っている状態かどうか
-    public int currentJumpCount = 0; // 現在のジャンプ回数
-    public bool isGrounded = false; // キャラクターが地面についているかどうか
+    public bool IsSit = false;            // キャラクターが座っている状態かどうか
+    public int currentJumpCount = 0;      // 現在のジャンプ回数
+    public bool isGrounded = false;       // キャラクターが地面についているかどうか
     public bool OnceJumpRayCheck = false; // 一度ジャンプをした後に地面チェックを行うかどうか
-    protected float m_MoveX; // 横方向の移動入力
-    public Rigidbody2D m_rigidbody; // キャラクターのRigidbody2Dコンポーネント
+    protected float m_MoveX;              // 横方向の移動入力
+    public Rigidbody2D m_rigidbody;       // キャラクターのRigidbody2Dコンポーネント
     protected CapsuleCollider2D m_CapsulleCollider; // キャラクターのコライダー
-    protected Animator m_Anim; // キャラクターのアニメーション制御
-    protected bool canMove = true; // キャラクターが移動可能かどうか
+    protected Animator m_Anim;            // キャラクターのアニメーション制御
+    protected bool canMove = true;        // キャラクターが移動可能かどうか
 
     // Projectile関連の変数
-    public GameObject projectilePrefab; // 弾のプレハブ
-    public Transform firePoint;         // 発射位置
+    public GameObject bombPrefab1;   // 弾のプレハブ
+    public GameObject bombPrefab2;
+    public GameObject currentBombPrefab;
+    public Transform firePoint;           // 発射位置
 
     // チャージ関連変数
     protected float chargeTime = 0f;      // チャージ時間
@@ -34,12 +36,12 @@ public abstract class PlayerController : MonoBehaviour
 
     // === 設定用の変数 ===
     [Header("[Setting]")]
-    public float MoveSpeed = 6; // キャラクターの移動速度
-    public int JumpCount = 2; // ジャンプ可能回数
-    public float jumpForce = 15f; // ジャンプ時の力
-    public float maxHealth = 1;  // 最大HP
-    public float health;         // 現在のHP
-    public Slider healthSlider; // HPを表示するスライダー
+    public float MoveSpeed = 6;           // キャラクターの移動速度
+    public int JumpCount = 2;             // ジャンプ可能回数
+    public float jumpForce = 15f;         // ジャンプ時の力
+    public float maxHealth = 1;           // 最大HP
+    public float health;                  // 現在のHP
+    public Slider healthSlider;           // HPを表示するスライダー
     public bool IsAlive => health > 0;
 
     // === メソッド ===
@@ -255,21 +257,26 @@ public abstract class PlayerController : MonoBehaviour
         if (!isCharging) return;
 
         float speed = Mathf.Lerp(minSpeed, maxSpeed, chargeTime / maxChargeTime);
-        GameObject projectile = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
+        GameObject projectile = Instantiate(currentBombPrefab, firePoint.position, firePoint.rotation);
 
         // Projectileコンポーネントを取得して、発射方向と速度を設定
-        Bomb proj = projectile.GetComponent<Bomb>();
+        BaseBomb bomb = projectile.GetComponent<BaseBomb>();
 
-        // firePointの向いている方向を基準に発射方向を決定
-        Vector2 shootDirection = firePoint.right;
-
-        // プレイヤーが左を向いている場合、方向を逆にする
-        if (transform.localScale.x < 0)
+        if (bomb != null)
         {
-            shootDirection = -firePoint.right;
+            Vector2 shootDirection = firePoint.right;
+            if (transform.localScale.x < 0)
+            {
+                shootDirection = -firePoint.right;
+            }
+            bomb.SetDirection(shootDirection, speed);
         }
-
-        proj.SetDirection(shootDirection, speed);
+        else
+        {
+            Debug.LogError("IBomb コンポーネントが見つかりません！");
+            Destroy(projectile);
+            return;
+        }
         ResetCharge();
 
         canMove = false; // 発射後に動けなくする

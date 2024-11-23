@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class Bomb : MonoBehaviour
+public class Bomb : MonoBehaviour, BaseBomb
 {
     public GameObject explosion;
     public float damage = 0.2f; // 弾が与えるダメージ量
@@ -18,8 +18,11 @@ public class Bomb : MonoBehaviour
     // 発射方向と速度を設定するメソッド
     public void SetDirection(Vector2 direction, float speed)
     {
-        rb = GetComponent<Rigidbody2D>();
-        rb.velocity = direction.normalized * speed;
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.velocity = direction.normalized * speed;
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

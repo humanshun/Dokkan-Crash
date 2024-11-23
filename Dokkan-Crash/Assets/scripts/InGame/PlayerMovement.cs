@@ -19,6 +19,10 @@ public class PlayerMovement : PlayerController
     public Slider moveSlider;
 
     //-----------------------------------
+    //爆弾スプライト
+    [SerializeField] private SpriteRenderer spriteRenderer; //爆弾のスプライトコンポーネント
+    [SerializeField] private Sprite bombSprite1; //通常の爆弾
+    [SerializeField] private Sprite bombSprite2; //ワープ弾
 
     private void Awake()
     {
@@ -60,6 +64,8 @@ public class PlayerMovement : PlayerController
         {
             playerNameText.text = playerName; // 名前を設定
         }
+
+        currentBombPrefab = bombPrefab1; // 通常の爆弾を初期設定にする
     }
 
 
@@ -170,7 +176,7 @@ public class PlayerMovement : PlayerController
         {
             m_Anim.Play("Attack");
             ShootChargedProjectile(); // チャージが完了したら発射
-    }
+        }
 
         // Sキーが押された時の処理（座る動作）
         if (Input.GetKeyDown(KeyCode.S))
@@ -290,6 +296,29 @@ public class PlayerMovement : PlayerController
                     }
                 }
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            SetHasBomb(1);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            SetHasBomb(2);
+        }
+    }
+
+    public void SetHasBomb(int bomb)
+    {
+        if (bomb == 1)
+        {
+            spriteRenderer.sprite = bombSprite1;
+            currentBombPrefab = bombPrefab1; // 通常の爆弾に切り替え
+        }
+        if (bomb == 2)
+        {
+            spriteRenderer.sprite = bombSprite2;
+            currentBombPrefab = bombPrefab2; // ワープ弾に切り替え
         }
     }
 

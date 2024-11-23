@@ -1004,7 +1004,9 @@ MonoBehaviour:
   isGrounded: 0
   OnceJumpRayCheck: 0
   m_rigidbody: {fileID: 0}
-  projectilePrefab: {fileID: 6020469347093829066, guid: 3d80c139f9318f84eb868f335a0883a5, type: 3}
+  bombPrefab1: {fileID: 6020469347093829066, guid: 3d80c139f9318f84eb868f335a0883a5, type: 3}
+  bombPrefab2: {fileID: 8398696581525452594, guid: 2258fa6bbb5c75746b1541f6fdc391fb, type: 3}
+  currentBombPrefab: {fileID: 0}
   firePoint: {fileID: 5442380504521380652}
   chargeSlider: {fileID: 6510297179926274537}
   MoveSpeed: 3
@@ -1015,6 +1017,9 @@ MonoBehaviour:
   healthSlider: {fileID: 1759409338225107933}
   playerNameText: {fileID: 5930667269497088767}
   moveSlider: {fileID: 3541740681888926905}
+  spriteRenderer: {fileID: 458892093757610727}
+  bombSprite1: {fileID: 21300000, guid: 542c308e1e4cf334f9570f6710eeb1e9, type: 3}
+  bombSprite2: {fileID: 21300000, guid: 0b3d95be317e6674e8b37ba7f8de4c00, type: 3}
 --- !u!50 &2927302979296720059
 Rigidbody2D:
   serializedVersion: 4
