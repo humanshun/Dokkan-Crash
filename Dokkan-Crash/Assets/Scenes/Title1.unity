@@ -394,7 +394,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f25ebcbd6747864c848a4f544146293, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: Title2
+  sceneName: StageSelect
   sceneChangeSecond: 11
 --- !u!1 &567352324
 GameObject:

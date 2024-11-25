@@ -62,11 +62,11 @@ public class PlayerSelection : MonoBehaviour
         playerListText.text = "Player List:\n";
         foreach (var player in SettingsManager.Instance.playerDataList)
         {
-            playerListText.text += $"- {player.playerName} (Wins: {player.winCount})\n";
+            playerListText.text += $"- {player.playerName}\n";
         }
 
         // 残りスロット数を表示
-        int remainingSlots = maxPlayers - SettingsManager.Instance.playerDataList.Count;
-        playerListText.text += $"\nRemaining Slots: {remainingSlots}";
+        // int remainingSlots = maxPlayers - SettingsManager.Instance.playerDataList.Count;
+        // playerListText.text += $"\nRemaining Slots: {remainingSlots}";
     }
 }
