@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class StartCheckButton : MonoBehaviour
 {
@@ -11,13 +12,21 @@ public class StartCheckButton : MonoBehaviour
     public GameObject roundCountObj;
 
     public Button startButton;                    // スタートボタン
+    public Button nextButton;                     // ネクストボタン
+    public Button backButton;                     // バックボタン
+    public Button fightButton;                    // ファイトボタン 
     public Button addButton;                      // プレイヤー名設定ボタン
     public Button[] roundCountButtons;            // ラウンドカウントボタン群
     private bool roundCountButtonClick = false;   // ラウンドカウントが設定されたか
 
+    private bool playerName = false;
+    private bool roundCount = false;
+
     void Start()
     {
         startButton.onClick.AddListener(OnButtonClick);
+        backButton.onClick.AddListener(OnBackButtonClick);
+        nextButton.onClick.AddListener(OnNextButtonClick);
 
         playerNameObj.SetActive(false);
         roundCountObj.SetActive(false);
@@ -31,16 +40,37 @@ public class StartCheckButton : MonoBehaviour
             });
         }
     }
+    void OnBackButtonClick()
+    {
+        if (playerName == false)
+        {
+            playerNameObj.transform.DOLocalMove(new Vector3(0, -120, 0), 1f);
+        }
+    }
+    void OnNextButtonClick()
+    {
+        if (roundCount == false)
+        {
+            roundCountObj.transform.DOLocalMove(new Vector3(0, -120, 0), 1f);
+        }
+    }
 
     void OnButtonClick()
     {
-        if (playerNameObj.activeSelf == false && roundCountObj.activeSelf == false)
+        if (playerNameObj.activeSelf == false)
         {
             playerNameObj.SetActive(true);
+            playerNameObj.transform.DOLocalMove(new Vector3(0, -120, 0), 1f);
+        }
+        else if (roundCountObj.activeSelf == false)
+        {
+            playerNameObj.transform.DOLocalMove(new Vector3(-1800, -120, 0), 1f);
             roundCountObj.SetActive(true);
+            roundCountObj.transform.DOLocalMove(new Vector3(0, -120, 0), 1f);
         }
         else
         {
+            roundCountObj.transform.DOLocalMove(new Vector3(-1800, -120, 0), 1f);
             // プレイヤー名またはラウンドカウントが未設定の場合、警告を出して処理を中止
             if (roundCountButtonClick == false || SettingsManager.Instance.playerDataList.Count < 2)
             {
