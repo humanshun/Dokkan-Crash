@@ -24,12 +24,9 @@ public class StartCheckButton : MonoBehaviour
 
     void Start()
     {
-        startButton.onClick.AddListener(OnButtonClick);
+        startButton.onClick.AddListener(OnStartButtonClick);
         backButton.onClick.AddListener(OnBackButtonClick);
         nextButton.onClick.AddListener(OnNextButtonClick);
-
-        playerNameObj.SetActive(false);
-        roundCountObj.SetActive(false);
 
         foreach (Button button in roundCountButtons)
         {
@@ -42,46 +39,42 @@ public class StartCheckButton : MonoBehaviour
     }
     void OnBackButtonClick()
     {
-        if (playerName == false)
+        if (playerName == false && roundCount == true)
         {
+            playerName = true;
+            roundCount = false;
+            roundCountObj.transform.DOLocalMove(new Vector3(1800, -120, 0), 1f);
             playerNameObj.transform.DOLocalMove(new Vector3(0, -120, 0), 1f);
         }
     }
     void OnNextButtonClick()
     {
-        if (roundCount == false)
+        if (playerName == true && roundCount == false)
         {
+            playerName = false;
+            roundCount = true;
             roundCountObj.transform.DOLocalMove(new Vector3(0, -120, 0), 1f);
+            playerNameObj.transform.DOLocalMove(new Vector3(-1800, -120, 0), 1f);
         }
     }
 
-    void OnButtonClick()
+    void OnStartButtonClick()
     {
-        if (playerNameObj.activeSelf == false)
+        if (playerName == false && roundCount == false)
         {
-            playerNameObj.SetActive(true);
+            playerName = true;
             playerNameObj.transform.DOLocalMove(new Vector3(0, -120, 0), 1f);
         }
-        else if (roundCountObj.activeSelf == false)
+        // プレイヤー名またはラウンドカウントが未設定の場合、警告を出して処理を中止
+        else if (roundCountButtonClick == false || SettingsManager.Instance.playerDataList.Count < 2)
         {
-            playerNameObj.transform.DOLocalMove(new Vector3(-1800, -120, 0), 1f);
-            roundCountObj.SetActive(true);
-            roundCountObj.transform.DOLocalMove(new Vector3(0, -120, 0), 1f);
+            Debug.LogWarning("PlayerNameまたはRoundCountが設定されていません。");
+             return;
         }
         else
         {
-            roundCountObj.transform.DOLocalMove(new Vector3(-1800, -120, 0), 1f);
-            // プレイヤー名またはラウンドカウントが未設定の場合、警告を出して処理を中止
-            if (roundCountButtonClick == false || SettingsManager.Instance.playerDataList.Count < 2)
-            {
-                Debug.LogWarning("PlayerNameまたはRoundCountが設定されていません。");
-                return;
-            }
-            else
-            {
-                // 条件を満たしている場合にシーン遷移
-                FadeManager.Instance.FadeToScene(nextSceneName);
-            }
+            // 条件を満たしている場合にシーン遷移
+            FadeManager.Instance.FadeToScene(nextSceneName);
         }
     }
 }
