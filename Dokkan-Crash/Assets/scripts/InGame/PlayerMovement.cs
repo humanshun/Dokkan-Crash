@@ -335,7 +335,7 @@ public class PlayerMovement : PlayerController
         {
             chargeSlider.gameObject.SetActive(false);
             TakeDamage(1f);
-            // gameManager.EndTurn();
+            
             // 自身をGameManagerに通知
             if (gameManager != null)
             {

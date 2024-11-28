@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class RoundSelection : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class RoundSelection : MonoBehaviour
     [SerializeField] private Button r2;
     [SerializeField] private Button r3;
     [SerializeField] private Button r4;
+    [SerializeField] private TextMeshProUGUI roundCountText; // プレイヤー一覧を表示するテキスト
 
     private void Start()
     {
@@ -20,7 +22,11 @@ public class RoundSelection : MonoBehaviour
     public void SetRoundCount(int roundCount)
     {
         SettingsManager.Instance.roundCount = roundCount;
-        Debug.Log($"ラウンド数が {roundCount} に設定されました！");
+        UpdatePlayerList();
+    }
+    private void UpdatePlayerList()
+    {
+        roundCountText.text = $"Round {SettingsManager.Instance.roundCount}\n";
     }
 }
 

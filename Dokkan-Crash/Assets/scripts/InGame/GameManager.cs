@@ -168,6 +168,7 @@ public class GameManager : MonoBehaviour
                 if (playerData != null)
                 {
                     playerData.winCount++; // 勝利数をカウント
+                    playerData.point += 10;
                     Debug.Log($"Player '{playerData.playerName}' won! Total wins: {playerData.winCount}");
                 }
             }

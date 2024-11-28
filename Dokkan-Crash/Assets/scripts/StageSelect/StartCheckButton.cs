@@ -16,7 +16,8 @@ public class StartCheckButton : MonoBehaviour
     public Button nextButton;                     // ネクストボタン
     public Button backButton;                     // バックボタン
     public Button fightButton;                    // ファイトボタン 
-    public GameObject WarningImage;
+    public GameObject warningImage;
+    public GameObject gameSettingTextImage;
     public Button addButton;                      // プレイヤー名設定ボタン
     public Button[] roundCountButtons;            // ラウンドカウントボタン群
     private bool roundCountButtonClick = false;   // ラウンドカウントが設定されたか
@@ -34,7 +35,8 @@ public class StartCheckButton : MonoBehaviour
         nextButton.gameObject.SetActive(false);
         backButton.gameObject.SetActive(false);
         fightButton.gameObject.SetActive(false);
-        WarningImage.SetActive(false);
+        warningImage.SetActive(false);
+        gameSettingTextImage.SetActive(false);
 
         foreach (Button button in roundCountButtons)
         {
@@ -52,7 +54,7 @@ public class StartCheckButton : MonoBehaviour
             nextButton.gameObject.SetActive(true);
             backButton.gameObject.SetActive(false);
             fightButton.gameObject.SetActive(false);
-            WarningImage.SetActive(false);
+            warningImage.SetActive(false);
             playerName = true;
             roundCount = false;
             roundCountObj.transform.DOLocalMove(new Vector3(1800, -120, 0), 1f);
@@ -79,6 +81,7 @@ public class StartCheckButton : MonoBehaviour
         {
             startButton.gameObject.SetActive(false);
             nextButton.gameObject.SetActive(true);
+            gameSettingTextImage.SetActive(true);
             playerName = true;
             playerNameObj.transform.DOLocalMove(new Vector3(0, -120, 0), 1f);
             return;
@@ -90,7 +93,7 @@ public class StartCheckButton : MonoBehaviour
         // プレイヤー名またはラウンドカウントが未設定の場合、警告を出して処理を中止
         if (roundCountButtonClick == false || SettingsManager.Instance.playerDataList.Count < 2)
         {
-            WarningImage.SetActive(true);
+            warningImage.SetActive(true);
             return;
         }
         else

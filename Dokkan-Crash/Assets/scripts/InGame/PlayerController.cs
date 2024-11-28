@@ -18,7 +18,7 @@ public abstract class PlayerController : MonoBehaviour
     protected CapsuleCollider2D m_CapsulleCollider; // キャラクターのコライダー
     protected Animator m_Anim;            // キャラクターのアニメーション制御
     protected bool canMove = true;        // キャラクターが移動可能かどうか
-
+    
     // Projectile関連の変数
     public GameObject bombPrefab1;   // 弾のプレハブ
     public GameObject bombPrefab2;

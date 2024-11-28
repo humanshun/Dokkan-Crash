@@ -10,9 +10,16 @@ public class PlayerSelection : MonoBehaviour
     [SerializeField] private Button addButton; // プレイヤー追加ボタン
     [SerializeField] private TextMeshProUGUI playerListText; // プレイヤー一覧を表示するテキスト
     [SerializeField] private int maxPlayers = 4; // プレイヤーの最大人数
+    [SerializeField] private int maxNameLength = 12; // 名前の最大文字数
 
     private void Start()
     {
+        // 名前入力フィールドに文字数制限を設定
+        nameInputField.characterLimit = maxNameLength;
+
+        // プレイヤーリストを更新して表示
+        UpdatePlayerList();
+
         // ボタンにクリック時の処理を登録
         addButton.onClick.AddListener(AddPlayer);
     }
@@ -59,14 +66,22 @@ public class PlayerSelection : MonoBehaviour
     private void UpdatePlayerList()
     {
         // プレイヤーリストをテキスト形式に変換して表示
-        playerListText.text = "Player List:\n";
+        playerListText.text = "Player List\n";
+
+        // プレイヤー名をリストに追加
         foreach (var player in SettingsManager.Instance.playerDataList)
         {
             playerListText.text += $"- {player.playerName}\n";
         }
 
-        // 残りスロット数を表示
-        // int remainingSlots = maxPlayers - SettingsManager.Instance.playerDataList.Count;
-        // playerListText.text += $"\nRemaining Slots: {remainingSlots}";
+        // 残りスロットを空の項目として表示
+        int remainingSlots = maxPlayers - SettingsManager.Instance.playerDataList.Count;
+        for (int i = 0; i < remainingSlots; i++)
+        {
+            playerListText.text += "-\n";
+        }
+
+        // 残りスロット数を最後に表示
+        playerListText.text += $"Remaining Slots: {remainingSlots}";
     }
 }
