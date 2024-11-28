@@ -10,6 +10,7 @@ public class PlayerMovement : PlayerController
     private GameManager gameManager;
 
     //-----------------------------------
+
     //移動制限
     private float maxMoveTime = 3f;          // 横移動できる最大の合計時間（秒）
     private float totalMoveTime = 0f;        // 横移動の累積時間
@@ -19,7 +20,8 @@ public class PlayerMovement : PlayerController
     public Slider moveSlider;
 
     //-----------------------------------
-    //爆弾スプライト
+
+    //爆弾
     [SerializeField] private SpriteRenderer spriteRenderer; //爆弾のスプライトコンポーネント
     [SerializeField] private Sprite bombSprite1; //通常の爆弾
     [SerializeField] private Sprite bombSprite2; //ワープ弾
@@ -332,8 +334,13 @@ public class PlayerMovement : PlayerController
         if (collision2D.gameObject.CompareTag("Die"))
         {
             chargeSlider.gameObject.SetActive(false);
-            TakeDamage(1000f);
-            gameManager.EndTurn();
+            TakeDamage(1f);
+            // gameManager.EndTurn();
+            // 自身をGameManagerに通知
+            if (gameManager != null)
+            {
+                gameManager.CheckGameOver();
+            }
         }
     }
 }

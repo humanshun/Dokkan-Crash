@@ -5,6 +5,7 @@ public class Bomb : MonoBehaviour, BaseBomb
 {
     public GameObject explosion;
     public float damage = 0.2f; // 弾が与えるダメージ量
+    private bool onDamage = false; //ダメージを与えたどうか
     public float explosionRadius = 1f; // タイル削除の範囲（半径）
     public float playerDamageRadius = 2.0f; // プレイヤーにダメージを与える範囲
     private Rigidbody2D rb;
@@ -13,6 +14,7 @@ public class Bomb : MonoBehaviour, BaseBomb
 
     private void Start()
     {
+        onDamage = false;
         gameManager = FindObjectOfType<GameManager>();
     }
 
@@ -71,7 +73,8 @@ public class Bomb : MonoBehaviour, BaseBomb
             PlayerController player = collision.gameObject.GetComponent<PlayerController>();
             if (player != null)
             {
-                player.TakeDamage(damage);
+                onDamage = true; //onDamageをオンに（爆風の判定とかぶらないように
+                player.TakeDamage(damage * 2); //直撃は難しいからダメージ２倍
             }
         }
 
@@ -84,7 +87,7 @@ public class Bomb : MonoBehaviour, BaseBomb
             if (collider.CompareTag("Player"))
             {
                 PlayerController player = collider.GetComponent<PlayerController>();
-                if (player != null)
+                if (player != null && !onDamage) //onDamageをオンに（直撃ダメージの判定とかぶらないように
                 {
                     player.TakeDamage(damage);
                 }
