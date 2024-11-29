@@ -10,7 +10,6 @@ public class Bomb : MonoBehaviour, BaseBomb
     public float playerDamageRadius = 2.0f; // プレイヤーにダメージを与える範囲
     private Rigidbody2D rb;
     private GameManager gameManager;
-    private bool hasExploded = false; // 爆発処理が行われたかを確認するフラグ
 
     private void Start()
     {
@@ -30,8 +29,6 @@ public class Bomb : MonoBehaviour, BaseBomb
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (hasExploded) return; // 処理が1度実行された場合は何もしない
-        hasExploded = true; // 処理中にフラグを設定
 
         // 共通の爆発処理（プレイヤーやタイル破壊の有無にかかわらず実行）
         Destroy(gameObject); // 爆弾を消す
@@ -73,8 +70,7 @@ public class Bomb : MonoBehaviour, BaseBomb
             PlayerController player = collision.gameObject.GetComponent<PlayerController>();
             if (player != null)
             {
-                onDamage = true; //onDamageをオンに（爆風の判定とかぶらないように
-                player.TakeDamage(damage * 2); //直撃は難しいからダメージ２倍
+                player.TakeDamage(damage * 2); //直撃はダメージ２倍
             }
         }
 
