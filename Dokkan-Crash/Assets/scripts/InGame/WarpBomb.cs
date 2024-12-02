@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class WarpBomb : MonoBehaviour, BaseBomb
 {
-    // public GameObject explosion; // 爆発エフェクトのプレハブ
-    private Rigidbody2D rb; // Rigidbody2Dコンポーネント
+    private Rigidbody2D rb;          // Rigidbody2Dコンポーネント
     private GameManager gameManager; // GameManager参照
     private void Start()
     {
